@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JeroStore - Asamblea Jerovia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rosa-principal: #f8bbd0;
+    --rosa-fuerte: #e91e63;
+    --dorado: #dfaf37;
+    --gradiente: linear-gradient(135deg, #f8bbd0 0%, #ffadad 100%);
+  }
+
+  body { font-family: 'Montserrat', sans-serif; background: #fffafb; margin: 0; padding-bottom: 50px; }
+  header { background: white; padding: 20px; text-align: center; border-bottom: 3px solid var(--rosa-principal); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  h1 { font-family: 'Playfair Display', serif; color: var(--rosa-fuerte); margin: 0; }
+
+  /* Login */
+  #loginScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+  .login-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 85%; max-width: 320px; text-align: center; }
+  input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; font-family: 'Montserrat'; }
+  .btn-action { background: var(--gradiente); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+  .btn-action:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3); }
+
+  /* Tienda */
+  #storeContent { display: none; padding: 20px; max-width: 600px; margin: 0 auto; }
+  .user-bar { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #f0f0f0; }
+  .coins-badge { background: #fff9c4; color: #fbc02d; padding: 6px 15px; border-radius: 20px; font-weight: 800; border: 1px solid #fbc02d; }
+
+  /* Admin Panel */
+  .admin-panel { background: #ffebee; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px dashed var(--rosa-fuerte); }
+  .mode-btn { padding: 6px 12px; border-radius: 10px; border: 1px solid var(--rosa-fuerte); background: white; color: var(--rosa-fuerte); cursor: pointer; font-size: 0.7rem; margin: 2px; }
+  .mode-btn.active { background: var(--rosa-fuerte); color: white; }
+
+  /* Grid */
+  .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .item-card { background: white; border-radius: 18px; padding: 15px; border: 1px solid #eee; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; position: relative; }
+  .item-card.hidden { display: none; }
+  .item-price { color: var(--rosa-fuerte); font-weight: 800; font-size: 1.1rem; margin-bottom: 4px; }
+  .item-name { font-weight: 700; font-size: 0.85rem; line-height: 1.2; margin-bottom: 6px; }
+  .item-desc { font-size: 0.65rem; color: #888; margin-bottom: 12px; line-height: 1.3; }
+
+  /* Modales */
+  .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); display:none; justify-content:center; align-items:center; z-index:1000; backdrop-filter: blur(4px); }
+  .modal-box { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 340px; text-align: center; }
+  
+  .extra-field { margin-top: 15px; text-align: left; }
+  .extra-field label { font-size: 0.75rem; font-weight: 700; color: var(--rosa-fuerte); margin-left: 5px; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JeroStore</h1>
+</header>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <p style="font-weight: 700; color: #555;">Bienvenida, Hermana</p>
+    <input type="text" id="loginName" placeholder="Tu nombre">
+    <input type="password" id="loginPass" placeholder="Contraseña">
+    <button class="btn-action" onclick="handleLogin()">Entrar a la Tienda</button>
+  </div>
+</div>
+
+<div id="storeContent">
+  <div class="user-bar">
+    <div>
+      <span id="userNameDisplay" style="font-weight: 700; color: #333;">Cargando...</span><br>
+      <small style="color: #bbb;">Saldo disponible</small>
+    </div>
+    <div class="coins-badge"><span id="userCoinsDisplay">0</span> JC</div>
+  </div>
+
+  <div id="adminControls" class="admin-panel hidden">
+    <p style="margin: 0 0 10px 0; font-size: 0.75rem; font-weight: 800; color: var(--rosa-fuerte);">MODO ADMIN (Solo Bella)</p>
+    <button class="mode-btn active" id="btnNorm" onclick="updateStoreMode('normal')">Reunión Normal</button>
+    <button class="mode-btn" id="btnPub" onclick="updateStoreMode('publica')">Ceremonia Pública</button>
+    <button class="mode-btn" id="btnPan" onclick="updateStoreMode('panchos')">Jeropancheada</button>
+    <button class="mode-btn" style="border-color: #4caf50; color: #4caf50;" onclick="closeMonth()">Cerrar Mes ✨</button>
+  </div>
+
+  <div class="store-grid" id="mainGrid"></div>
+</div>
+
+<div id="buyModal" class="modal-overlay" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h2 id="mTitle" style="font-family: 'Playfair Display'; font-size: 1.4rem; margin: 0 0 10px 0;"></h2>
+    <p id="mDesc" style="font-size: 0.8rem; color: #777; margin-bottom: 20px;"></p>
+    
+    <div id="mInputs"></div>
+
+    <div id="upsellBox" class="hidden" style="background: #fef7e0; border-radius: 15px; padding: 10px; margin-top: 15px; border: 1px solid #fbc02d;">
+        <p style="font-size: 0.75rem; font-weight: 700; margin: 0;">¿Deseas que diga algo específico? (+25%)</p>
+        <input type="checkbox" id="upsellCheck" onchange="toggleUpsell()"> 
+    </div>
+
+    <button class="btn-action" id="finalConfirmBtn" style="margin-top: 20px;">Confirmar Canje</button>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "URL_DE_TU_GOOGLE_SCRIPT"; // Aquí va tu URL de Apps Script
+let currentUser = null;
+let currentMode = 'normal'; // 'normal', 'publica', 'panchos'
+
+const CATALOG = [
+    { id: 1, name: "1- Este es mi tema", price: 5, category: 'normal', desc: "Elegir una música para un momento aleatorio de la reunión.", fields: ['Canción'] },
+    { id: 2, name: "2- Yo organizo", price: 8, category: 'normal', desc: "Elegís el orden de participación en la dinámica.", fields: [] },
+    { id: 3, name: "3- Momento epico", price: 12, category: 'normal', desc: "Elegir música para un momento específico de la reunión.", fields: ['Canción', 'Momento exacto'] },
+    { id: 4, name: "4- Entrada Triunfal (normal)", price: 15, category: 'normal', desc: "Elegir la música de entrada ritualística.", fields: ['Canción'] },
+    { id: 5, name: "5- Salida Triunfal (normal)", price: 18, category: 'normal', desc: "Elegir la música de salida ritualística.", fields: ['Canción'] },
+    { id: 6, name: "6- Este tema NO", price: 20, category: 'siempre', desc: "Derecho a decidir qué música NO va a sonar.", fields: ['Canción prohibida'] },
+    { id: 7, name: "7- Mi tema", price: 22, category: 'publica', desc: "Música aleatoria en Ceremonia Pública.", fields: ['Canción'] },
+    { id: 8, name: "8- Momento epico", price: 25, category: 'publica', desc: "Música específica en Ceremonia Pública.", fields: ['Canción', 'Momento exacto'] },
+    { id: 9, name: "9- Entrada Triunfal", price: 30, category: 'publica', desc: "Elegir la música de entrada en Ceremonia Pública.", fields: ['Canción'] },
+    { id: 10, name: "10- Salida epica", price: 35, category: 'publica', desc: "Elegir la música de salida en Ceremonia Pública.", fields: ['Canción'] },
+    { id: 11, name: "11- Gordichan", price: 40, category: 'publica', desc: "Elegir lugar de bocaditos y especificaciones.", fields: ['Lugar', 'Especificaciones'] },
+    { id: 12, name: "12- Insta baddie", price: 45, category: 'siempre', desc: "Historia de Instagram destacando tus meses en podio.", fields: ['Mensaje personalizado'] },
+    { id: 13, name: "13- De chill normal", price: 50, category: 'normal', desc: "Eximida de orden y limpieza en reunión regular.", fields: [] },
+    { id: 14, name: "14- Freaky Friday", price: 55, category: 'normal', desc: "Cambio de cargo con una hermana por este sábado.", fields: ['Con quién querés cambiar'] },
+    { id: 15, name: "15- Baby no", price: 55, category: 'normal', desc: "Negarte al cambio de cargo asignado.", fields: [] },
+    { id: 16, name: "16- Don't be shy", price: 65, category: 'publica', desc: "Obligar a una hermana a hablar en la Pública.", fields: ['Nombre de la víctima'], upsell: true },
+    { id: 17, name: "17- Me da wewencha", price: 65, category: 'publica', desc: "Negarte a la obligación de hablar.", fields: [] },
+    { id: 18, name: "18- RE de chill", price: 70, category: 'publica', desc: "Eximida de orden y limpieza en la Pública.", fields: [] },
+    { id: 19, name: "19- Jeropanchill", price: 75, category: 'panchos', desc: "No ayudar durante la jeropancheada.", fields: [] },
+    { id: 20, name: "20- Mencion de honor presidencial", price: 80, category: 'publica', desc: "Mención especial de la Ilustre Preceptora.", fields: [], upsell: true }
+];
+
+async function handleLogin() {
+    const name = document.getElementById('loginName').value;
+    const pass = document.getElementById('loginPass').value;
+    
+    // Aquí llamarías a Google Apps Script para validar
+    // Por ahora simulamos la lógica:
+    if(name === "Bella") document.getElementById('adminControls').classList.remove('hidden');
+    
+    currentUser = { name: name, coins: 150, podioCount: 3 }; // Mock data
+    
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('storeContent').style.display = 'block';
+    document.getElementById('userNameDisplay').innerText = currentUser.name;
+    document.getElementById('userCoinsDisplay').innerText = currentUser.coins;
+    
+    renderStore();
+}
+
+function renderStore() {
+    const grid = document.getElementById('mainGrid');
+    grid.innerHTML = '';
+    
+    CATALOG.forEach(item => {
+        let isVisible = item.category === 'siempre' || item.category === currentMode;
+        if (isVisible) {
+            grid.innerHTML += `
+                <div class="item-card" onclick="openPurchaseModal(${item.id})">
+                    <div>
+                        <div class="item-price">${item.price} JC</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-desc">${item.desc}</div>
+                    </div>
+                    <button class="btn-action" style="font-size: 0.6rem; padding: 8px;">Canjear</button>
+                </div>`;
+        }
+    });
+}
+
+function updateStoreMode(m) {
+    currentMode = m;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    if(m === 'normal') document.getElementById('btnNorm').classList.add('active');
+    if(m === 'publica') document.getElementById('btnPub').classList.add('active');
+    if(m === 'panchos') document.getElementById('btnPan').classList.add('active');
+    renderStore();
+}
+
+function openPurchaseModal(id) {
+    const item = CATALOG.find(i => i.id === id);
+    document.getElementById('mTitle').innerText = item.name;
+    document.getElementById('mDesc').innerText = item.desc;
+    
+    const inputArea = document.getElementById('mInputs');
+    inputArea.innerHTML = '';
+    
+    item.fields.forEach(f => {
+        inputArea.innerHTML += `
+            <div class="extra-field">
+                <label>${f}</label>
+                <input type="text" placeholder="..." id="field_${f.replace(/\s/g, '')}">
+            </div>`;
+    });
+
+    if(item.upsell) {
+        document.getElementById('upsellBox').classList.remove('hidden');
+        document.getElementById('upsellCheck').checked = false;
+    } else {
+        document.getElementById('upsellBox').classList.add('hidden');
+    }
+
+    document.getElementById('finalConfirmBtn').onclick = () => processPurchase(item);
+    document.getElementById('buyModal').style.display = 'flex';
+}
+
+function toggleUpsell() {
+    const check = document.getElementById('upsellCheck');
+    if(check.checked) {
+        // Podés agregar un campo extra si marca el check
+        const inputArea = document.getElementById('mInputs');
+        if(!document.getElementById('field_MensajeEspecífico')) {
+            inputArea.innerHTML += `
+                <div class="extra-field" id="upsellField">
+                    <label>¿Qué debe decir exactamente?</label>
+                    <input type="text" id="field_MensajeEspecífico">
+                </div>`;
+        }
+    } else {
+        const field = document.getElementById('upsellField');
+        if(field) field.remove();
+    }
+}
+
+function processPurchase(item) {
+    let finalPrice = item.price;
+    const isUpsell = document.getElementById('upsellCheck') && document.getElementById('upsellCheck').checked;
+    if(isUpsell) finalPrice += (item.price * 0.25);
+
+    if(currentUser.coins < finalPrice) {
+        alert("¡No tenés suficientes JeroCoins!");
+        return;
+    }
+
+    // Armar el mensaje de WhatsApp
+    let extraData = "";
+    item.fields.forEach(f => {
+        const val = document.getElementById(`field_${f.replace(/\s/g, '')}`).value;
+        extraData += `. Ha elegido: ${f} -> ${val}`;
+    });
+    
+    if(isUpsell) {
+        const msg = document.getElementById('field_MensajeEspecífico').value;
+        extraData += `. Extra: Deberá decir: "${msg}"`;
+    }
+
+    const wsMsg = `${currentUser.name} ha adquirido el privilegio "${item.name}" para este sábado${extraData}.`;
+    window.open(`https://wa.me/TU_NUMERO?text=${encodeURIComponent(wsMsg)}`, '_blank');
+    
+    closeModal();
+    alert("¡Privilegio canjeado! Se notificó a la encargada.");
+}
+
+function closeModal() { document.getElementById('buyModal').style.display = 'none'; }
+
+// Simulación de Cierre de Mes para Bella
+function closeMonth() {
+    if(confirm("¿Cerrar mes y asignar monedas al Podio?")) {
+        alert("Mes cerrado. Se sumaron 15, 10 y 5 JeroCoins a las ganadoras automáticamente.");
+    }
+}
+</script>
+</body>
+</html>
