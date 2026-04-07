@@ -195,7 +195,7 @@
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbnRBGyL2Uo84GD6yB9kRwCTCrMMyJk4P9YCxgWKQdXPxwsPe4TlWKN_3Y-dgeNL2yoA/exec";
-const WHATSAPP_NUMBER = "5959XXXXXXXX";
+const WHATSAPP_NUMBER = "595981614237";
 
 let isGuest = true;
 let user = null;
@@ -385,7 +385,7 @@ async function executePurchase() {
     if(activeItem.id === 12) extra += `\n- Meses en podio: ${user.mesesPodio}`;
 
     const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}${extra}\nCosto: ${cost} ✦`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
+    window.open(`https://wa.me/${+595981614237}?text=${encodeURIComponent(msg)}`);
 
     // Guardar en Excel
     await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "PURCHASE", user: user.nombre, cost: cost }) });
