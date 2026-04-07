@@ -7,150 +7,209 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --rosa-light: #fce4ec;
-    --rosa-jero: #f8bbd0;
-    --rosa-fuerte: #e91e63;
-    --arcoiris: linear-gradient(90deg, #ffadad, #ffd6a5, #fdffb6, #caffbf, #9bf6ff, #a0c4ff, #bdb2ff, #ffc6ff);
-    --texto: #333;
+    --rosa-principal: #f8bbd0;
+    --rosa-fuerte: #ff4081;
+    --fondo: #fdfafb;
+    --texto: #4a4a4a;
+    --oro: #d4af37;
+    --sombra: 0 10px 30px rgba(233, 30, 99, 0.08);
+    --arcoiris: linear-gradient(90deg, #f8bbd0, #e1f5fe, #f3e5ab, #f8bbd0);
   }
 
-  body { font-family: 'Montserrat', sans-serif; background: #fffafb; margin: 0; padding-bottom: 80px; color: var(--texto); }
+  body { 
+    font-family: 'Montserrat', sans-serif; 
+    background: var(--fondo); 
+    margin: 0; 
+    padding-bottom: 80px; 
+    color: var(--texto); 
+    overflow-x: hidden;
+    background-image: linear-gradient(135deg, #fff5f8 0%, #ffffff 100%);
+  }
   
-  /* Toque Arcoiris Superior */
-  .rainbow-bar { height: 6px; background: var(--arcoiris); width: 100%; position: fixed; top: 0; z-index: 1000; }
+  /* Efecto Arcoiris Sutil en la parte superior */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 4px;
+    background: var(--arcoiris);
+    background-size: 300% 100%;
+    animation: rainbow-flow 6s linear infinite;
+    z-index: 1000;
+  }
 
-  header { background: white; padding: 25px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--rosa-light); margin-top: 6px; }
-  h1 { font-family: 'Playfair Display', serif; color: var(--rosa-fuerte); margin: 0; font-size: 1.6rem; }
+  @keyframes rainbow-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  header { 
+    background: rgba(255, 255, 255, 0.9); 
+    backdrop-filter: blur(10px);
+    padding: 20px 5%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 2px solid var(--rosa-principal); 
+    position: sticky; top: 0; z-index: 100; 
+  }
   
-  .jero-badge { background: var(--rosa-light); color: var(--rosa-fuerte); padding: 8px 16px; border-radius: 30px; border: 1px solid var(--rosa-jero); font-weight: 800; display: none; }
+  h1 { font-family: 'Playfair Display', serif; color: var(--rosa-fuerte); margin: 0; font-size: 1.6rem; letter-spacing: 1px; }
+  
+  .user-status { display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.85rem; }
+  .jero-badge { 
+    background: white; 
+    color: var(--rosa-fuerte); 
+    padding: 8px 16px; 
+    border-radius: 30px; 
+    border: 2px solid var(--rosa-principal); 
+    font-weight: 800; 
+    display: none; 
+    box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
+  }
 
-  /* Login Personalizado */
+  /* Notificaciones Flotantes (Toasts) */
+  #toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--texto); color: white; padding: 12px 25px;
+    border-radius: 50px; font-size: 0.9rem; z-index: 1000;
+    display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp { from { bottom: -50px; } to { bottom: 20px; } }
+
   .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; justify-content: center; align-items: center; z-index: 200; }
-  .auth-card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 20px 50px rgba(233, 30, 99, 0.1); width: 85%; max-width: 320px; text-align: center; border: 2px solid var(--rosa-light); }
+  .auth-card { background: white; padding: 40px; border-radius: 30px; box-shadow: var(--sombra); width: 85%; max-width: 320px; text-align: center; border: 1px solid var(--rosa-principal); }
+  .auth-card h2 { font-family: 'Playfair Display'; font-size: 2rem; color: var(--rosa-fuerte); margin: 0 0 10px 0; }
   
-  .error-msg { color: var(--rosa-fuerte); font-size: 0.7rem; font-weight: 700; margin-top: 5px; display: none; }
-
-  input { width: 100%; padding: 16px; margin: 8px 0; border: 2px solid #f9f9f9; border-radius: 15px; box-sizing: border-box; font-family: 'Montserrat'; outline: none; transition: 0.3s; }
-  input:focus { border-color: var(--rosa-jero); background: #fff; }
-
-  .btn-main { background: var(--texto); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 15px; transition: 0.3s; }
-  .btn-main:hover { background: var(--rosa-fuerte); transform: scale(1.02); }
-
-  /* Store */
-  .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-  .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
+  input { width: 100%; padding: 15px; margin: 8px 0; border: 1px solid #eee; border-radius: 15px; box-sizing: border-box; font-family: 'Montserrat'; background: #fff9fb; outline: none; transition: 0.3s; }
+  input:focus { border-color: var(--rosa-fuerte); background: white; box-shadow: 0 0 0 4px rgba(255, 64, 129, 0.1); }
   
-  .card { background: white; border-radius: 25px; position: relative; overflow: hidden; border: 1px solid var(--rosa-light); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-  .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(233, 30, 99, 0.08); border-color: var(--rosa-jero); }
+  .btn-main { background: var(--rosa-fuerte); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; box-shadow: 0 5px 15px rgba(255, 64, 129, 0.3); }
+  .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 64, 129, 0.4); }
+
+  /* Admin Panel */
+  .admin-bar { background: #fff; margin: 20px auto; max-width: 1000px; padding: 25px; border-radius: 25px; border: 2px solid var(--rosa-principal); display: none; }
+  .toggle { padding: 10px 18px; border-radius: 25px; border: 1.5px solid var(--rosa-principal); background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; color: var(--rosa-fuerte); transition: 0.2s; }
+  .toggle.active { background: var(--rosa-fuerte); color: white; border-color: var(--rosa-fuerte); }
+
+  /* Store Grid */
+  .card { background: white; border-radius: 25px; border: 1px solid #fce4ec; transition: 0.4s; }
+  .card:hover { border-color: var(--rosa-fuerte); transform: scale(1.02); }
+  .card-title { font-family: 'Playfair Display'; color: var(--rosa-fuerte); }
+  .btn-price { width: 100%; background: #fff5f8; border: 1.5px solid var(--rosa-principal); padding: 12px; border-radius: 15px; font-weight: 800; color: var(--rosa-fuerte); cursor: pointer; }
+  .card:hover .btn-price { background: var(--rosa-fuerte); color: white; }
+
+  /* Modales */
+  .modal-content { border-top: 5px solid var(--rosa-fuerte); }
   
-  .card-body { padding: 40px 25px; text-align: center; }
-  .card-title { font-family: 'Playfair Display'; font-size: 1.2rem; color: var(--texto); font-weight: 600; }
-
-  /* Descripciones exactas al pasar cursor */
-  .card-info { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 70px); background: rgba(255, 255, 255, 0.98); display: flex; align-items: center; justify-content: center; padding: 25px; box-sizing: border-box; text-align: center; font-size: 0.8rem; color: #555; opacity: 0; transition: 0.3s; pointer-events: none; line-height: 1.6; }
-  .card:hover .card-info { opacity: 1; }
-
-  .card-footer { padding: 15px; border-top: 1px solid #fff0f5; }
-  .btn-price { width: 100%; background: var(--arcoiris); color: #444; border: none; padding: 14px; border-radius: 15px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
-
-  /* Modales Estilizados */
-  .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(233, 30, 99, 0.05); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 300; }
-  .modal-content { background: white; padding: 35px; border-radius: 30px; width: 85%; max-width: 360px; border: 1px solid var(--rosa-jero); box-shadow: 0 25px 60px rgba(0,0,0,0.1); }
-  
-  .insufficient-funds { color: var(--rosa-fuerte); font-family: 'Playfair Display'; text-align: center; display: none; }
-
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<div class="rainbow-bar"></div>
+<div id="toast"></div>
 
 <header>
   <h1>JeroStore</h1>
-  <div style="display: flex; align-items:center; gap:10px;">
-    <span id="labelName" style="font-weight:700; font-size:0.8rem;">Invitado</span>
-    <div class="jero-badge" id="jeroBadge"><span id="valCoins">0</span> ✦</div>
+  <div class="user-status">
+    <span id="labelName">Invitada</span>
+    <div class="jero-badge" id="jeroBadge"><span id="valCoins">0</span> JeroCoins</div>
   </div>
 </header>
 
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-card">
-    <h2 style="font-family: 'Playfair Display'; margin:0;">Bienvenida</h2>
-    <p style="font-size:0.7rem; color:#aaa; margin-bottom:20px;">Ingresá a tu cuenta de la Asamblea</p>
-    <input type="text" id="userInput" placeholder="Nombre">
+    <h2>Bienvenida</h2>
+    <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 20px;">Inicia sesión con tus datos de la Asamblea</p>
+    <input type="text" id="userInput" placeholder="Tu nombre (ej: Isabella)">
     <input type="password" id="passInput" placeholder="Contraseña">
-    <div class="error-msg" id="loginError">Usuario o contraseña incorrectos</div>
-    <button class="btn-main" onclick="attemptLogin()">Ingresar</button>
-    <button style="background:none; border:none; color:#bbb; font-size:0.7rem; text-decoration:underline; margin-top:15px; cursor:pointer;" onclick="enterAsGuest()">Continuar como invitado</button>
+    <button class="btn-main" onclick="attemptLogin()">Entrar a la Tienda</button>
+    <button class="btn-guest" onclick="enterAsGuest()" style="background:none; border:none; color:#bbb; cursor:pointer; text-decoration:underline; margin-top:15px;">Continuar como invitada</button>
   </div>
 </div>
 
-<div class="container">
-  <div class="store-grid" id="grid"></div>
-</div>
-
-<div class="modal" id="modalNoFunds">
-  <div class="modal-content" style="text-align: center;">
-    <h2 style="font-family: 'Playfair Display'; color: var(--rosa-fuerte);">¡Oh no!</h2>
-    <p>Parece que no tienes suficientes JeroCoins para este privilegio. ✧</p>
-    <button class="btn-main" onclick="closeM('modalNoFunds')">Entendido</button>
+<div class="admin-bar" id="adminBar">
+  <h3>Panel Administrativo</h3>
+  <div class="controls" style="display:flex; gap:10px; flex-wrap:wrap;">
+    <button class="toggle active" id="btnModeNorm" onclick="switchMode('normal')">Reunión Regular</button>
+    <button class="toggle" id="btnModePub" onclick="switchMode('publica')">Ceremonia Pública</button>
+    <button class="toggle" id="btnModeDina" onclick="toggleOption('dinamica')">Modo Dinámica</button>
+    <button class="toggle" id="btnModePan" onclick="toggleOption('panchos')">Modo Panchos</button>
+    <button class="toggle" style="background: var(--oro); color: white; border:none; margin-left: auto;" onclick="closeMonth()">Cerrar Mes ✨</button>
   </div>
 </div>
 
-<div class="modal" id="modalBuy">
-  <div class="modal-content">
-    <h2 id="buyTitle" style="text-align:center;"></h2>
+<div class="container" style="max-width:1100px; margin: 40px auto; padding:0 20px;">
+  <div class="store-grid" id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px;"></div>
+</div>
+
+<div class="modal" id="modalBuy" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 300;">
+  <div class="modal-content" style="background: white; padding: 35px; border-radius: 30px; width: 85%; max-width: 360px;">
+    <h2 id="buyTitle" style="text-align:center; font-family:'Playfair Display'; color: var(--rosa-fuerte);"></h2>
     <div id="dynamicFields"></div>
     
-    <div id="upsellSection" style="margin-top:20px; display:none; background:#fff9fb; padding:15px; border-radius:15px; border:1px dashed var(--rosa-jero);">
-      <label style="font-size:0.75rem; font-weight:700;"><input type="checkbox" id="upsellCheck" onchange="document.getElementById('upsellMsg').style.display = this.checked ? 'block' : 'none'"> Especificar mensaje (+25%)</label>
-      <input type="text" id="upsellMsg" placeholder="¿Qué debe decir exactamente?" style="display:none; margin-top:10px; font-size:0.8rem;">
+    <div id="upsellSection" class="upsell-box hidden" style="background:#fff5f8; padding:15px; border-radius:15px; margin-top:15px;">
+      <label style="font-size:0.8rem; font-weight:700;"><input type="checkbox" id="upsellCheck" onchange="updateUpsellUI()"> Especificar mensaje (+25%)</label>
+      <input type="text" id="upsellMsg" placeholder="¿Qué debe decir?" style="display:none; margin-top:10px;">
     </div>
 
-    <button class="btn-main" id="confirmBtn" onclick="executePurchase()">Confirmar Canje</button>
-    <button style="width:100%; background:none; border:none; color:#aaa; font-size:0.75rem; margin-top:10px; cursor:pointer;" onclick="closeM('modalBuy')">Cancelar</button>
+    <button class="btn-main" style="margin-top:25px" onclick="executePurchase()">Confirmar Canje</button>
+    <button onclick="closeM('modalBuy')" style="width:100%; background:none; border:none; color:#bbb; margin-top:15px; cursor:pointer;">Cancelar</button>
   </div>
 </div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbnRBGyL2Uo84GD6yB9kRwCTCrMMyJk4P9YCxgWKQdXPxwsPe4TlWKN_3Y-dgeNL2yoA/exec";
-const WHATSAPP_NUMBER = "+595981614237"; // <-- CONFIGURAR AQUÍ
 
 let isGuest = true;
 let user = null;
+let mode = 'normal'; 
+let hasDinamica = false;
+let hasPanchos = false;
 let activeItem = null;
 
+// Catálogo con JeroCoins
 const CATALOG = [
-  { id: 1, name: "Este es mi tema", price: 5, cat: 'always', desc: "Tenés el privilegio a elegir una música que sonará durante la reunión del sábado, en el momento en el que la hermana armonía lo decida.", fields: ['Canción'] },
-  { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Tenés el privilegio a decidir qué música NO va a sonar este sábado.", fields: ['Canción prohibida'] },
-  { id: 12, name: "Insta baddie", price: 45, cat: 'always', desc: "Tenés el privilegio de que la asamblea te dedique una historia de instagram indicando en qué meses estuviste en el podio y con un mensaje creado por vos.", fields: ['Mensaje'] },
-  { id: 16, name: "Don't be shy", price: 65, cat: 'always', desc: "Tenés el privilegio de obligar a hablar a la hermana de tu elección durante una ceremonia pública y pagando un precio extra, podés obligarla a que diga algo en específico.", fields: ['Nombre de la hermana'], upsell: true }
-  // ... (agregar el resto del catálogo aquí con los nombres exactos)
+  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegís una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
+  { id: 2, name: "Yo organizo", price: 8, cat: 'dinamica', desc: "Elegís el orden de participación en la dinámica.", fields: [] },
+  { id: 3, name: "Momento épico", price: 12, cat: 'normal', desc: "Música en el momento de tu preferencia.", fields: ['Canción', 'Momento'] },
+  { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Decidís qué música NO va a sonar.", fields: ['Canción prohibida'] },
+  { id: 11, name: "Gordichan", price: 40, cat: 'publica', desc: "Elegís dónde compramos los bocaditos.", fields: ['Lugar', 'Especificaciones'] },
+  { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligás a hablar a una hermana.", fields: ['Nombre de la hermana'], upsell: true },
+  { id: 20, name: "Mención de Honor", price: 80, cat: 'publica', desc: "Mención especial por la Ilustre Preceptora.", fields: [], upsell: true }
 ];
 
-async function attemptLogin() {
-    const n = document.getElementById('userInput').value;
-    const p = document.getElementById('passInput').value;
-    const err = document.getElementById('loginError');
-    err.style.display = 'none';
-
-    if(n === "Jeroviana" && p === "9102021") {
-        user = { nombre: "Jeroviana", jeroCoins: 9999, mesesPodio: 0 };
-        finishLogin();
-        return;
-    }
-
-    try {
-        const resp = await fetch(SCRIPT_URL);
-        const data = await resp.json();
-        const found = data.find(h => h.nombre.toLowerCase() === n.toLowerCase() && h.password === p);
-        if(!found) { err.style.display = 'block'; return; }
-        user = found;
-        finishLogin();
-    } catch(e) { err.innerText = "Error de conexión"; err.style.display = 'block'; }
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
 }
 
-function finishLogin() {
+async function processLogin(n, p) {
+    if(!n || !p) return showToast("Por favor, completa los datos.");
+    
+    if(n === "Jeroviana" && p === "9102021") {
+        user = { nombre: "Jeroviana", jeroCoins: 9999 };
+        document.getElementById('adminBar').style.display = 'block';
+    } else {
+        showToast("Verificando credenciales...");
+        const resp = await fetch(SCRIPT_URL);
+        const data = await resp.json();
+        
+        // Filtro para ignorar la fila "Puntos" o encabezados
+        const found = data.find(h => 
+            h.nombre && 
+            h.nombre.toLowerCase() !== "puntos" && 
+            h.nombre.toLowerCase().includes(n.toLowerCase()) && 
+            h.password === p
+        );
+        
+        if(!found) return showToast("Usuario o contraseña incorrectos.");
+        user = found;
+    }
+
     isGuest = false;
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('labelName').innerText = user.nombre;
@@ -159,48 +218,23 @@ function finishLogin() {
     render();
 }
 
-function enterAsGuest() {
-    isGuest = true;
-    document.getElementById('authOverlay').style.display = 'none';
-    render();
-}
-
 function render() {
     const g = document.getElementById('grid');
     g.innerHTML = '';
     CATALOG.forEach(i => {
-        g.innerHTML += `
-            <div class="card" onclick="openBuy(${i.id})">
-                <div class="card-body"><div class="card-title">${i.name}</div></div>
-                <div class="card-info">${i.desc}</div>
-                <div class="card-footer">
-                    <button class="btn-price">${i.price} ✦</button>
-                </div>
-            </div>`;
-    });
-}
+        let visible = i.cat === 'always' || i.cat === mode;
+        if(i.cat === 'dinamica' && hasDinamica) visible = true;
+        if(i.cat === 'panchos' && hasPanchos) visible = true;
 
-function openBuy(id) {
-    if(isGuest) { 
-        document.getElementById('authOverlay').style.display = 'flex'; 
-        return; 
-    }
-    activeItem = CATALOG.find(i => i.id === id);
-    if(user.jeroCoins < activeItem.price) {
-        document.getElementById('modalNoFunds').style.display = 'flex';
-        return;
-    }
-    
-    document.getElementById('buyTitle').innerText = activeItem.name;
-    const fields = document.getElementById('dynamicFields');
-    fields.innerHTML = '';
-    activeItem.fields.forEach(f => {
-        fields.innerHTML += `<label style="font-size:0.7rem; font-weight:700; color:#aaa; margin-top:10px; display:block;">${f}</label>
-                             <input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="Completar...">`;
+        if(visible) {
+            g.innerHTML += `
+                <div class="card" onclick="openBuy(${i.id})" style="padding:20px; text-align:center; cursor:pointer; position:relative; overflow:hidden;">
+                    <div class="card-title" style="font-weight:700; margin-bottom:10px;">${i.name}</div>
+                    <p style="font-size:0.7rem; color:#888;">${i.desc}</p>
+                    <button class="btn-price" style="margin-top:15px;">${i.price} JeroCoins</button>
+                </div>`;
+        }
     });
-    
-    document.getElementById('upsellSection').style.display = activeItem.upsell ? 'block' : 'none';
-    document.getElementById('modalBuy').style.display = 'flex';
 }
 
 async function executePurchase() {
@@ -208,17 +242,13 @@ async function executePurchase() {
     const isUp = activeItem.upsell && document.getElementById('upsellCheck').checked;
     if(isUp) cost = Math.round(cost * 1.25);
 
-    let extra = "";
-    activeItem.fields.forEach(f => {
-        extra += `\n- ${f}: ${document.getElementById('f_'+f.replace(/\s/g, '')).value}`;
-    });
-    if(isUp) extra += `\n- Mensaje especial: ${document.getElementById('upsellMsg').value}`;
-    if(activeItem.id === 12) extra += `\n- Meses en podio: ${user.mesesPodio}`;
+    if(user.jeroCoins < cost) return showToast("No tienes suficientes JeroCoins 🌸");
 
-    // MENSAJE EXACTO PARA WHATSAPP
-    const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}${extra}\nCosto: ${cost} JeroCoins`;
+    showToast("Procesando canje...");
     
-    window.open(`https://wa.me/${+595981614237}?text=${encodeURIComponent(msg)}`);
+    // Simulación de envío a WhatsApp y actualización de Excel
+    const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}\nCosto: ${cost} JeroCoins`;
+    window.open(`https://wa.me/595981614237?text=${encodeURIComponent(msg)}`);
 
     await fetch(SCRIPT_URL, {
         method: 'POST',
@@ -228,9 +258,34 @@ async function executePurchase() {
     user.jeroCoins -= cost;
     document.getElementById('valCoins').innerText = user.jeroCoins;
     closeM('modalBuy');
+    showToast("¡Canje realizado con éxito!");
 }
 
+async function closeMonth() {
+    if(confirm("¿Cerrar mes? Se repartirán 15, 10 y 5 JeroCoins. Los empates recibirán los puntos completos.")) {
+        showToast("Cerrando mes y premiando podio...");
+        await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "CLOSE_MONTH", handleTies: true }) 
+        });
+        location.reload();
+    }
+}
+
+// Auxiliares
+function openBuy(id) {
+    if(isGuest) return showToast("Debes iniciar sesión para canjear.");
+    activeItem = CATALOG.find(i => i.id === id);
+    document.getElementById('buyTitle').innerText = activeItem.name;
+    document.getElementById('modalBuy').style.display = 'flex';
+}
 function closeM(id) { document.getElementById(id).style.display = 'none'; }
+function updateUpsellUI() { document.getElementById('upsellMsg').style.display = document.getElementById('upsellCheck').checked ? 'block' : 'none'; }
+function attemptLogin() { processLogin(document.getElementById('userInput').value, document.getElementById('passInput').value); }
+function enterAsGuest() { document.getElementById('authOverlay').style.display = 'none'; render(); }
+function switchMode(m) { mode = m; render(); }
+function toggleOption(opt) { if(opt==='dinamica') hasDinamica=!hasDinamica; else hasPanchos=!hasPanchos; render(); }
+
 render();
 </script>
 </body>
