@@ -119,7 +119,7 @@
   <h3>Panel de Jeroviana 👑</h3>
   <div class="controls">
     <button class="toggle toggle-master" id="btnMasterToggle" onclick="toggleMasterSwitch()">Tienda: ON</button>
-    <button class="toggle" id="btn_normal" onclick="toggleMode('normal', 'btn_normal')">Reunión Regular</button>
+    <button class="toggle active" id="btn_normal" onclick="toggleMode('normal', 'btn_normal')">Reunión Regular</button>
     <button class="toggle" id="btn_publica" onclick="toggleMode('publica', 'btn_publica')">Ceremonia Pública</button>
     <button class="toggle" id="btn_dinamica" onclick="toggleMode('dinamica', 'btn_dinamica')">Dinámica</button>
     <button class="toggle" id="btn_panchos" onclick="toggleMode('panchos', 'btn_panchos')">Panchos</button>
@@ -127,7 +127,8 @@
   </div>
   <div class="admin-table-container">
     <table class="admin-table">
-      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalles Específicos</th></tr>
+      <thead>
+        <tr><th>Hermanita</th><th>Canje</th><th>Detalles Específicos</th></tr>
       </thead>
       <tbody id="adminLogsBody"></tbody>
     </table>
@@ -173,7 +174,6 @@ let activeModes = { normal: true, publica: false, dinamica: false, panchos: fals
 let activeItem = null;
 let globalLogs = [];
 
-// Cargar filtros guardados en localStorage
 function cargarFiltrosGuardados() {
     const guardados = localStorage.getItem('jeroStore_filtros');
     if (guardados) {
@@ -183,14 +183,12 @@ function cargarFiltrosGuardados() {
         } catch(e) {}
     }
     
-    // Actualizar visualmente los botones
     document.getElementById('btn_normal').classList.toggle('active', activeModes.normal);
     document.getElementById('btn_publica').classList.toggle('active', activeModes.publica);
     document.getElementById('btn_dinamica').classList.toggle('active', activeModes.dinamica);
     document.getElementById('btn_panchos').classList.toggle('active', activeModes.panchos);
 }
 
-// Guardar filtros
 function guardarFiltros() {
     localStorage.setItem('jeroStore_filtros', JSON.stringify({
         normal: activeModes.normal,
@@ -263,7 +261,10 @@ async function attemptLogin() {
            document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. ¡La próxima semana hay más! ✨</li>';
         }
         render();
-    } catch(e) { mostrarMensaje("Cargando la tienda, aguardá un segundo... 🌸"); }
+    } catch(e) { 
+        console.error(e);
+        mostrarMensaje("Error al conectar. Revisá tu conexión 🌸"); 
+    }
 }
 
 function armarFraseOrganica(usuario, beneficio, specs) {
@@ -278,18 +279,18 @@ function actualizarMuroYAdmin(logs) {
     if(logs.length > 0) {
         list.innerHTML = logs.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
         if(user && user.nombre === "Jeroviana") {
-            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td>`).join('');
+            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
         }
     } else {
         list.innerHTML = '<li>✨ Aún no hay canjes recientes. ¡Sé la primera en canjear! ✨</li>';
-        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td>' );
+        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
     }
 }
 
 function limpiarMuroYSemana() {
     document.getElementById('muroList').innerHTML = '<li>✨ Nueva semana, nuevos canjes disponibles ✨</li>';
     if(user && user.nombre === "Jeroviana") {
-        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td>' );
+        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td></tr>';
     }
 }
 
