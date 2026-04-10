@@ -172,7 +172,7 @@ async function attemptLogin() {
     if(!n || !p) return mostrarMensaje("Completá tus datos 🌸");
     
     try {
-        const resp = await fetch(SCRIPT_URL);
+        const resp = await fetch(SCRIPT_URL + "?source=store");
         const data = await resp.json();
         
         // El script devuelve un objeto con {usuarios: [], logs: []}
