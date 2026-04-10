@@ -183,10 +183,14 @@ function cargarFiltrosGuardados() {
         } catch(e) {}
     }
     
-    document.getElementById('btn_normal').classList.toggle('active', activeModes.normal);
-    document.getElementById('btn_publica').classList.toggle('active', activeModes.publica);
-    document.getElementById('btn_dinamica').classList.toggle('active', activeModes.dinamica);
-    document.getElementById('btn_panchos').classList.toggle('active', activeModes.panchos);
+    const btnNormal = document.getElementById('btn_normal');
+    const btnPublica = document.getElementById('btn_publica');
+    const btnDinamica = document.getElementById('btn_dinamica');
+    const btnPanchos = document.getElementById('btn_panchos');
+    if (btnNormal) btnNormal.classList.toggle('active', activeModes.normal);
+    if (btnPublica) btnPublica.classList.toggle('active', activeModes.publica);
+    if (btnDinamica) btnDinamica.classList.toggle('active', activeModes.dinamica);
+    if (btnPanchos) btnPanchos.classList.toggle('active', activeModes.panchos);
 }
 
 function guardarFiltros() {
@@ -259,6 +263,9 @@ async function attemptLogin() {
         if(isStoreOpen) actualizarMuroYAdmin(globalLogs);
         else {
            document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. ¡La próxima semana hay más! ✨</li>';
+           if(user && user.nombre === "Jeroviana") {
+               document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Los canjes volverán al abrir</td></tr>';
+           }
         }
         render();
     } catch(e) { 
@@ -279,18 +286,20 @@ function actualizarMuroYAdmin(logs) {
     if(logs.length > 0) {
         list.innerHTML = logs.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
         if(user && user.nombre === "Jeroviana") {
-            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
+            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td>`).join('');
         }
     } else {
         list.innerHTML = '<li>✨ Aún no hay canjes recientes. ¡Sé la primera en canjear! ✨</li>';
-        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
+        if(user && user.nombre === "Jeroviana") {
+            adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
+        }
     }
 }
 
-function limpiarMuroYSemana() {
-    document.getElementById('muroList').innerHTML = '<li>✨ Nueva semana, nuevos canjes disponibles ✨</li>';
+function limpiarMuroYAdminCompleto() {
+    document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. Los canjes volverán cuando la abras de nuevo ✨</li>';
     if(user && user.nombre === "Jeroviana") {
-        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td></tr>';
+        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Los canjes se mostrarán al abrir</td></tr>';
     }
 }
 
@@ -360,16 +369,35 @@ function toggleMasterSwitch() {
     btn.classList.toggle('off', !isStoreOpen);
     
     if(!isStoreOpen) {
-        limpiarMuroYSemana();
+        limpiarMuroYAdminCompleto();
+    } else {
+        // Recargar los datos del servidor al abrir la tienda
+        recargarDatosAlAbrirTienda();
     }
     render();
     
     fetch(SCRIPT_URL + "?source=store", {
         method: 'POST',
         body: JSON.stringify({ action: "TOGGLE_STORE", state: isStoreOpen ? "OPEN" : "CLOSED" })
-    }).then(() => {
-        if(isStoreOpen) location.reload();
     });
+}
+
+async function recargarDatosAlAbrirTienda() {
+    try {
+        const resp = await fetch(SCRIPT_URL + "?source=store");
+        const data = await resp.json();
+        globalLogs = data.logs || [];
+        actualizarMuroYAdmin(globalLogs);
+        if(user && user.nombre !== "Jeroviana") {
+            const foundUser = data.usuarios.find(u => u.nombre === user.nombre);
+            if(foundUser) {
+                user.jeroCoins = foundUser.jeroCoins;
+                document.getElementById('valCoins').innerText = user.jeroCoins;
+            }
+        }
+    } catch(e) {
+        console.error("Error al recargar datos:", e);
+    }
 }
 
 function toggleDesc(id) {
@@ -397,7 +425,11 @@ function openBuy(id) {
 }
 
 function updateUpsellUI() { document.getElementById('upsellMsg').style.display = document.getElementById('upsellCheck').checked ? 'block' : 'none'; }
-function enterAsGuest() { document.getElementById('authOverlay').style.display = 'none'; render(); }
+function enterAsGuest() { 
+    document.getElementById('authOverlay').style.display = 'none'; 
+    isGuest = true;
+    render(); 
+}
 function closeM(id) { document.getElementById(id).style.display = 'none'; }
 function openHelp() { document.getElementById('modalHelp').style.display = 'flex'; }
 
@@ -423,13 +455,14 @@ function lanzarConfeti() {
 
 function toggleMode(cat, btnId) {
     activeModes[cat] = !activeModes[cat];
-    document.getElementById(btnId).classList.toggle('active', activeModes[cat]);
+    const btn = document.getElementById(btnId);
+    if (btn) btn.classList.toggle('active', activeModes[cat]);
     guardarFiltros();
     render();
 }
 
 async function closeMonth() {
-    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio\n✅ Cerrar la tienda automáticamente\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
+    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio a TODAS las que estén en el podio (incluyendo empates)\n✅ Cerrar la tienda automáticamente\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
         mostrarMensaje("Cerrando mes... Procesando podio 🌸");
         
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
