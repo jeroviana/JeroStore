@@ -286,20 +286,13 @@ function actualizarMuroYAdmin(logs) {
     if(logs.length > 0) {
         list.innerHTML = logs.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
         if(user && user.nombre === "Jeroviana") {
-            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td>`).join('');
+            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
         }
     } else {
         list.innerHTML = '<li>✨ Aún no hay canjes recientes. ¡Sé la primera en canjear! ✨</li>';
         if(user && user.nombre === "Jeroviana") {
             adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
         }
-    }
-}
-
-function limpiarMuroYAdminCompleto() {
-    document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. Los canjes volverán cuando la abras de nuevo ✨</li>';
-    if(user && user.nombre === "Jeroviana") {
-        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Los canjes se mostrarán al abrir</td></tr>';
     }
 }
 
@@ -362,42 +355,18 @@ async function executePurchase() {
     });
 }
 
-function toggleMasterSwitch() {
-    isStoreOpen = !isStoreOpen;
-    const btn = document.getElementById('btnMasterToggle');
-    btn.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
-    btn.classList.toggle('off', !isStoreOpen);
+async function toggleMasterSwitch() {
+    const newState = isStoreOpen ? "CLOSED" : "OPEN";
+    mostrarMensaje(newState === "CLOSED" ? "Cerrando tienda y archivando compras..." : "Abriendo tienda...");
     
-    if(!isStoreOpen) {
-        limpiarMuroYAdminCompleto();
-    } else {
-        // Recargar los datos del servidor al abrir la tienda
-        recargarDatosAlAbrirTienda();
-    }
-    render();
-    
-    fetch(SCRIPT_URL + "?source=store", {
+    // Enviar comando al servidor (si es CLOSED, el script archivará las compras)
+    await fetch(SCRIPT_URL + "?source=store", {
         method: 'POST',
-        body: JSON.stringify({ action: "TOGGLE_STORE", state: isStoreOpen ? "OPEN" : "CLOSED" })
+        body: JSON.stringify({ action: "TOGGLE_STORE", state: newState })
     });
-}
-
-async function recargarDatosAlAbrirTienda() {
-    try {
-        const resp = await fetch(SCRIPT_URL + "?source=store");
-        const data = await resp.json();
-        globalLogs = data.logs || [];
-        actualizarMuroYAdmin(globalLogs);
-        if(user && user.nombre !== "Jeroviana") {
-            const foundUser = data.usuarios.find(u => u.nombre === user.nombre);
-            if(foundUser) {
-                user.jeroCoins = foundUser.jeroCoins;
-                document.getElementById('valCoins').innerText = user.jeroCoins;
-            }
-        }
-    } catch(e) {
-        console.error("Error al recargar datos:", e);
-    }
+    
+    // Recargar la página para reflejar el nuevo estado limpio
+    location.reload();
 }
 
 function toggleDesc(id) {
@@ -425,11 +394,7 @@ function openBuy(id) {
 }
 
 function updateUpsellUI() { document.getElementById('upsellMsg').style.display = document.getElementById('upsellCheck').checked ? 'block' : 'none'; }
-function enterAsGuest() { 
-    document.getElementById('authOverlay').style.display = 'none'; 
-    isGuest = true;
-    render(); 
-}
+function enterAsGuest() { document.getElementById('authOverlay').style.display = 'none'; render(); }
 function closeM(id) { document.getElementById(id).style.display = 'none'; }
 function openHelp() { document.getElementById('modalHelp').style.display = 'flex'; }
 
@@ -462,12 +427,12 @@ function toggleMode(cat, btnId) {
 }
 
 async function closeMonth() {
-    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio a TODAS las que estén en el podio (incluyendo empates)\n✅ Cerrar la tienda automáticamente\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
+    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5) a TODAS las empatadas\n✅ Sumar +1 mes en podio\n✅ Cerrar la tienda automáticamente\n❌ NO mueve compras (eso ya se hace al apagar)\n\n¿Deseas continuar?")) {
         mostrarMensaje("Cerrando mes... Procesando podio 🌸");
         
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
         
-        mostrarMensaje("✨ ¡Mes cerrado exitosamente! Podio premiado ✨");
+        mostrarMensaje("✨ ¡Mes cerrado exitosamente! ✨");
         setTimeout(() => location.reload(), 2000);
     }
 }
