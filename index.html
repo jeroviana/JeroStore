@@ -119,7 +119,7 @@
   <h3>Panel de Jeroviana 👑</h3>
   <div class="controls">
     <button class="toggle toggle-master" id="btnMasterToggle" onclick="toggleMasterSwitch()">Tienda: ON</button>
-    <button class="toggle active" id="btn_normal" onclick="toggleMode('normal', 'btn_normal')">Reunión Regular</button>
+    <button class="toggle" id="btn_normal" onclick="toggleMode('normal', 'btn_normal')">Reunión Regular</button>
     <button class="toggle" id="btn_publica" onclick="toggleMode('publica', 'btn_publica')">Ceremonia Pública</button>
     <button class="toggle" id="btn_dinamica" onclick="toggleMode('dinamica', 'btn_dinamica')">Dinámica</button>
     <button class="toggle" id="btn_panchos" onclick="toggleMode('panchos', 'btn_panchos')">Panchos</button>
@@ -172,6 +172,34 @@ let isStoreOpen = true;
 let activeModes = { normal: true, publica: false, dinamica: false, panchos: false, always: true };
 let activeItem = null;
 let globalLogs = [];
+
+// Cargar filtros guardados en localStorage
+function cargarFiltrosGuardados() {
+    const guardados = localStorage.getItem('jeroStore_filtros');
+    if (guardados) {
+        try {
+            const filtros = JSON.parse(guardados);
+            activeModes = { ...activeModes, ...filtros };
+        } catch(e) {}
+    }
+    
+    // Actualizar visualmente los botones
+    document.getElementById('btn_normal').classList.toggle('active', activeModes.normal);
+    document.getElementById('btn_publica').classList.toggle('active', activeModes.publica);
+    document.getElementById('btn_dinamica').classList.toggle('active', activeModes.dinamica);
+    document.getElementById('btn_panchos').classList.toggle('active', activeModes.panchos);
+}
+
+// Guardar filtros
+function guardarFiltros() {
+    localStorage.setItem('jeroStore_filtros', JSON.stringify({
+        normal: activeModes.normal,
+        publica: activeModes.publica,
+        dinamica: activeModes.dinamica,
+        panchos: activeModes.panchos,
+        always: activeModes.always
+    }));
+}
 
 const CATALOG = [
   { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
@@ -246,28 +274,23 @@ function armarFraseOrganica(usuario, beneficio, specs) {
 function actualizarMuroYAdmin(logs) {
     const list = document.getElementById('muroList');
     const adminBody = document.getElementById('adminLogsBody');
-    const unaSemanaAtras = new Date();
-    unaSemanaAtras.setDate(unaSemanaAtras.getDate() - 7);
-
-    const recientes = logs.filter(l => new Date(l.fecha) > unaSemanaAtras).reverse();
     
-    if(recientes.length > 0) {
-        list.innerHTML = recientes.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
+    if(logs.length > 0) {
+        list.innerHTML = logs.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
         if(user && user.nombre === "Jeroviana") {
-            adminBody.innerHTML = recientes.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
+            adminBody.innerHTML = logs.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td>`).join('');
         }
     } else {
         list.innerHTML = '<li>✨ Aún no hay canjes recientes. ¡Sé la primera en canjear! ✨</li>';
-        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
+        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td>' );
     }
 }
 
 function limpiarMuroYSemana() {
     document.getElementById('muroList').innerHTML = '<li>✨ Nueva semana, nuevos canjes disponibles ✨</li>';
     if(user && user.nombre === "Jeroviana") {
-        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td></tr>';
+        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td>' );
     }
-    globalLogs = [];
 }
 
 function render() {
@@ -337,14 +360,14 @@ function toggleMasterSwitch() {
     
     if(!isStoreOpen) {
         limpiarMuroYSemana();
-    } else {
-        actualizarMuroYAdmin(globalLogs);
     }
     render();
     
     fetch(SCRIPT_URL + "?source=store", {
         method: 'POST',
         body: JSON.stringify({ action: "TOGGLE_STORE", state: isStoreOpen ? "OPEN" : "CLOSED" })
+    }).then(() => {
+        if(isStoreOpen) location.reload();
     });
 }
 
@@ -400,11 +423,12 @@ function lanzarConfeti() {
 function toggleMode(cat, btnId) {
     activeModes[cat] = !activeModes[cat];
     document.getElementById(btnId).classList.toggle('active', activeModes[cat]);
+    guardarFiltros();
     render();
 }
 
 async function closeMonth() {
-    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
+    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio\n✅ Cerrar la tienda automáticamente\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
         mostrarMensaje("Cerrando mes... Procesando podio 🌸");
         
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
@@ -414,6 +438,8 @@ async function closeMonth() {
     }
 }
 
+// Inicializar
+cargarFiltrosGuardados();
 render();
 </script>
 </body>
