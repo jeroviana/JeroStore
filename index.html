@@ -163,7 +163,6 @@
 </div>
 
 <script>
-// ACORDATE DE ASEGURARTE QUE EL SCRIPT DE GOOGLE TENGA EL ?source=store COMO HABLAMOS
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbnRBGyL2Uo84GD6yB9kRwCTCrMMyJk4P9YCxgWKQdXPxwsPe4TlWKN_3Y-dgeNL2yoA/exec";
 
 let user = null;
@@ -173,7 +172,6 @@ let activeModes = { normal: true, publica: false, dinamica: false, panchos: fals
 let activeItem = null;
 let globalLogs = [];
 
-// Tu catálogo completo original de 20 ítems con categorías corregidas
 const CATALOG = [
   { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
   { id: 2, name: "Yo organizo", price: 8, cat: 'dinamica', desc: "Elegís el orden de participación en la dinámica.", fields: [] },
@@ -208,9 +206,17 @@ async function attemptLogin() {
         
         const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase() === n.toLowerCase() && h.password === p);
         
+        // Cargar estado de la tienda que mandó el servidor
+        if(data.storeState === "CLOSED") isStoreOpen = false;
+        
         if(n === "Jeroviana" && p === "9102021") {
             user = { nombre: "Jeroviana", jeroCoins: 9999 };
             document.getElementById('adminBar').style.display = 'block';
+            
+            // Actualizar botón admin según el estado real
+            const btnT = document.getElementById('btnMasterToggle');
+            btnT.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
+            btnT.classList.toggle('off', !isStoreOpen);
         } else if (found) {
             user = found;
             isGuest = false;
@@ -224,12 +230,14 @@ async function attemptLogin() {
         document.getElementById('valCoins').innerText = user.jeroCoins;
         document.getElementById('jeroBadge').style.display = 'block';
         
-        actualizarMuroYAdmin(globalLogs);
+        if(isStoreOpen) actualizarMuroYAdmin(globalLogs);
+        else {
+           document.getElementById('muroList').innerHTML = '<li>Tienda en pausa. Volvemos en la próxima reunión.</li>';
+        }
         render();
     } catch(e) { mostrarMensaje("Cargando la tienda, aguardá un segundo... 🌸"); }
 }
 
-// Armador de frases orgánicas para el Muro
 function armarFraseOrganica(usuario, beneficio, specs) {
     if (!specs || specs.trim() === "") return `✨ ¡<b>${usuario}</b> aseguró su <b>${beneficio}</b>!`;
     return `✨ ¡<b>${usuario}</b> acaba de canjear <b>${beneficio}</b>! <i>(Detalles: ${specs})</i>`;
@@ -275,7 +283,6 @@ function render() {
     });
 }
 
-// Adiós WhatsApp. Todo local.
 async function executePurchase() {
     let cost = activeItem.price;
     const isUp = activeItem.upsell && document.getElementById('upsellCheck').checked;
@@ -283,7 +290,6 @@ async function executePurchase() {
 
     if(user.jeroCoins < cost) return mostrarMensaje("No tenés suficientes ✦ para este privilegio.");
 
-    // Recopilar especificaciones
     let specsArray = [];
     activeItem.fields.forEach(f => {
         let val = document.getElementById('f_'+f.replace(/\s/g, '')).value;
@@ -292,19 +298,16 @@ async function executePurchase() {
     if(isUp) specsArray.push(`Mensaje: ${document.getElementById('upsellMsg').value}`);
     let specs = specsArray.join(', ');
 
-    // Mostrar mensaje de éxito rápido en pantalla
     user.jeroCoins -= cost;
     document.getElementById('valCoins').innerText = user.jeroCoins;
     closeM('modalBuy');
     mostrarMensaje("¡Canje guardado exitosamente! ✦");
     lanzarConfeti();
     
-    // Agregar al muro de inmediato sin esperar al server
     const li = document.createElement('li');
     li.innerHTML = armarFraseOrganica(user.nombre, activeItem.name, specs);
     document.getElementById('muroList').prepend(li);
 
-    // Enviar a Google Sheets en segundo plano
     fetch(SCRIPT_URL + "?source=store", { 
         method: 'POST', 
         body: JSON.stringify({ action: "PURCHASE", user: user.nombre, item: activeItem.name, cost: cost, specs: specs }) 
@@ -324,6 +327,12 @@ function toggleMasterSwitch() {
         actualizarMuroYAdmin(globalLogs);
     }
     render();
+    
+    // Le avisa al servidor que guarde el estado
+    fetch(SCRIPT_URL + "?source=store", {
+        method: 'POST',
+        body: JSON.stringify({ action: "TOGGLE_STORE", state: isStoreOpen ? "OPEN" : "CLOSED" })
+    });
 }
 
 function toggleDesc(id) {
@@ -375,7 +384,6 @@ function lanzarConfeti() {
     }
 }
 
-// Ahora la función de los botones funciona perfectamente recibiendo el ID directo
 function toggleMode(cat, btnId) {
     activeModes[cat] = !activeModes[cat];
     document.getElementById(btnId).classList.toggle('active', activeModes[cat]);
@@ -383,8 +391,7 @@ function toggleMode(cat, btnId) {
 }
 
 async function closeMonth() {
-    if(confirm("¿Estás segura de cerrar el mes? Esto procesará los puntos en el Excel y limpiará el registro.")) {
-        // Le mostramos a Jeroviana que algo está pasando para que no crea que se tildó
+    if(confirm("¿Estás segura de cerrar el mes? Esto procesará los puntos en el Excel, los sumará a JeroCoins, y limpiará el tablero para empezar de cero.")) {
         mostrarMensaje("Cerrando mes... Aguardá un momento 🌸");
         
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
