@@ -7,9 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --rosa-pastel: #fce4ec;
+    --rosa-pastel: #fce4ec; 
     --rosa-principal: #f8bbd0;
-    --rosa-fuerte: #e91e63;
+    --rosa-fuerte: #e91e63; 
     --fondo: #fcfcfc;
     --texto: #333;
     --oro: #d4af37;
@@ -39,47 +39,40 @@
   .muro-container h3 { font-size: 0.9rem; margin: 0 0 10px 0; color: var(--rosa-fuerte); display: flex; align-items: center; gap: 5px; }
   .muro-list { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; max-height: 100px; overflow-y: auto; }
   .muro-list li { padding: 5px 0; border-bottom: 1px solid #f5f5f5; }
-  .muro-list li:last-child { border-bottom: none; }
   .store-closed-msg { text-align: center; color: var(--rosa-fuerte); font-weight: 700; padding: 10px; background: var(--rosa-pastel); border-radius: 10px; margin-top: 15px; display: none; }
 
   .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 200; }
   .auth-card { background: white; padding: 35px 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 85%; max-width: 320px; text-align: center; border: 2px solid var(--rosa-pastel); }
-  .auth-card h2 { font-family: 'Playfair Display'; font-size: 1.8rem; margin: 0 0 5px 0; color: var(--rosa-fuerte); }
-  .auth-card p { color: #888; font-size: 0.75rem; margin-bottom: 20px; }
-  input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-family: 'Montserrat'; background: #f9f9f9; outline: none; transition: 0.3s; font-size: 0.9rem; }
-  .btn-main { background: var(--rosa-fuerte); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+  input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-family: 'Montserrat'; font-size: 0.9rem; }
+  .btn-main { background: var(--rosa-fuerte); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
   .btn-guest { background: none; border: none; color: #aaa; font-size: 0.8rem; text-decoration: underline; margin-top: 15px; cursor: pointer; }
 
   .admin-bar { background: #fff; margin: 20px; padding: 15px; border-radius: 15px; border: 2px solid var(--rosa-principal); display: none; }
-  .admin-bar h3 { font-family: 'Playfair Display'; margin: 0 0 10px 0; font-size: 1rem; color: var(--texto); }
   .controls { display: flex; flex-wrap: wrap; gap: 8px; }
-  .toggle { padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; color: #666; transition: 0.2s; }
-  .toggle.active { background: var(--rosa-principal); color: var(--texto); border-color: var(--rosa-principal); }
+  .toggle { padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+  .toggle.active { background: var(--rosa-principal); }
   .toggle-master { background: #00A859; color: white; border: none; }
   .toggle-master.off { background: #D8303B; }
   
-  .admin-table-container { margin-top: 15px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; }
-  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; text-align: left; }
-  .admin-table th { background: var(--rosa-pastel); padding: 8px; position: sticky; top: 0; }
-  .admin-table td { padding: 8px; border-bottom: 1px solid #f9f9f9; }
+  .admin-table-container { margin-top: 15px; max-height: 150px; overflow-y: auto; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+  .admin-table th { background: var(--rosa-pastel); padding: 8px; text-align: left; }
+  .admin-table td { padding: 8px; border-bottom: 1px solid #eee; }
 
   .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
   .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-  .card { background: white; border-radius: 15px; border: 1px solid var(--rosa-pastel); display: flex; flex-direction: column; box-shadow: var(--sombra); transition: 0.3s; }
-  .card-body { padding: 20px 15px; text-align: center; cursor: pointer; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80px; position: relative; }
-  .card-title { font-family: 'Playfair Display'; font-size: 1rem; color: var(--texto); font-weight: 600; line-height: 1.2; z-index: 2; }
-  .click-hint { font-size: 0.6rem; color: #aaa; margin-top: 8px; z-index: 2; }
-  .card-info { font-size: 0.75rem; color: #555; background: #fffcfd; padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease; text-align: center; border-top: 0px solid transparent; }
+  .card { background: white; border-radius: 15px; border: 1px solid var(--rosa-pastel); display: flex; flex-direction: column; box-shadow: var(--sombra); }
+  .card-body { padding: 20px 15px; text-align: center; cursor: pointer; flex-grow: 1; }
+  .card-title { font-family: 'Playfair Display'; font-size: 1rem; color: var(--texto); font-weight: 600; }
+  .card-info { font-size: 0.75rem; color: #555; background: #fffcfd; max-height: 0; overflow: hidden; transition: 0.3s ease-out; text-align: center; }
   .card-info.show { max-height: 200px; padding: 15px; border-top: 1px dashed var(--rosa-pastel); }
   .card-footer { padding: 12px; background: var(--fondo); border-top: 1px solid var(--rosa-pastel); border-radius: 0 0 15px 15px; }
-  .btn-price { width: 100%; background: white; border: 1px solid var(--rosa-principal); padding: 10px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--rosa-fuerte); }
-  .btn-price:disabled { background: #eee; border-color: #ddd; color: #aaa; cursor: not-allowed; }
+  .btn-price { width: 100%; background: white; border: 1px solid var(--rosa-principal); padding: 10px; border-radius: 10px; font-weight: 800; color: var(--rosa-fuerte); cursor: pointer; }
+  .btn-price:disabled { background: #eee; color: #aaa; }
 
   .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 300; }
-  .modal-content { background: white; padding: 30px 20px; border-radius: 20px; width: 85%; max-width: 340px; box-shadow: var(--sombra); border-top: 5px solid var(--rosa-fuerte); max-height: 90vh; overflow-y: auto;}
-  .modal-content h2 { font-family: 'Playfair Display'; font-size: 1.3rem; margin: 0 0 10px 0; text-align: center; color: var(--rosa-fuerte); }
-  .field-label { display: block; font-size: 0.7rem; font-weight: 700; color: #888; margin: 15px 0 5px 5px; text-transform: uppercase; }
-  .toast { visibility: hidden; min-width: 250px; background-color: var(--rosa-fuerte); color: #fff; text-align: center; border-radius: 20px; padding: 12px 20px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3); opacity: 0; transition: 0.3s; }
+  .modal-content { background: white; padding: 30px 20px; border-radius: 20px; width: 85%; max-width: 340px; border-top: 5px solid var(--rosa-fuerte); }
+  .toast { visibility: hidden; min-width: 250px; background-color: var(--rosa-fuerte); color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: 0.3s; }
   .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
   .confetti { position: fixed; width: 10px; height: 10px; z-index: 9998; animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -103,14 +96,10 @@
 
 <div class="muro-container" id="muroSection">
   <h3>✨ Novedades de la Semana</h3>
-  <ul class="muro-list" id="muroList">
-    <li id="emptyMuro">Aún no hay canjes. ¡Sé la primera!</li>
-  </ul>
+  <ul class="muro-list" id="muroList"><li id="emptyMuro">Cargando novedades...</li></ul>
 </div>
 
-<div class="store-closed-msg" id="storeClosedMsg">
-  🛑 La tienda está cerrada hasta la próxima reunión.
-</div>
+<div class="store-closed-msg" id="storeClosedMsg">🛑 La tienda está cerrada hasta la próxima reunión.</div>
 
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-card">
@@ -129,110 +118,101 @@
     <button class="toggle toggle-master" id="btnMasterToggle" onclick="toggleMasterSwitch()">Tienda: ON</button>
     <button class="toggle active" id="btnModeNorm" onclick="toggleMode('normal')">Reunión Regular</button>
     <button class="toggle" id="btnModePub" onclick="toggleMode('publica')">Ceremonia Pública</button>
-    <button class="toggle" id="btnModeDina" onclick="toggleMode('dinamica')">Modo Dinámica</button>
-    <button class="toggle" id="btnModePan" onclick="toggleMode('panchos')">Modo Panchos</button>
+    <button class="toggle" id="btnModeDina" onclick="toggleMode('dinamica')">Dinámica</button>
+    <button class="toggle" id="btnModePan" onclick="toggleMode('panchos')">Panchos</button>
     <button class="toggle" style="background: var(--oro); color: white; border:none; width: 100%; margin-top:5px;" onclick="closeMonth()">Cerrar Mes ✨</button>
   </div>
   <div class="admin-table-container">
     <table class="admin-table">
-      <thead><tr><th>Hermanita</th><th>Beneficio</th><th>Detalle</th></tr></thead>
-      <tbody id="adminLogTable"></tbody>
+      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalle</th></tr></thead>
+      <tbody id="adminLogsBody"></tbody>
     </table>
   </div>
 </div>
 
-<div class="container">
-  <div class="store-grid" id="grid"></div>
-</div>
-
-<div class="modal" id="modalHelp">
-  <div class="modal-content">
-    <h2>Reglas JeroStore</h2>
-    <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">Toca cualquier tarjeta para leer la descripción.<br><br>Los pagos se descuentan automáticamente y se registran en el historial de la Asamblea.</p>
-    <button class="btn-main" onclick="closeM('modalHelp')">Entendido</button>
-  </div>
-</div>
+<div class="container"><div class="store-grid" id="grid"></div></div>
 
 <div class="modal" id="modalBuy">
   <div class="modal-content">
     <h2 id="buyTitle"></h2>
     <div id="dynamicFields"></div>
+    <div id="upsellSection" class="hidden">
+      <label style="font-size: 0.8rem; font-weight: 600; color: var(--rosa-fuerte); display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="upsellCheck" onchange="updateUpsellUI()"> Especificar mensaje (+25%)
+      </label>
+      <input type="text" id="upsellMsg" placeholder="¿Qué debe decir?" style="display:none; margin-top:10px;">
+    </div>
     <button class="btn-main" style="margin-top:20px" onclick="executePurchase()">Confirmar Canje</button>
     <button class="btn-guest" style="width:100%" onclick="closeM('modalBuy')">Cancelar</button>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = "TU_URL_DE_SCRIPT"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbnRBGyL2Uo84GD6yB9kRwCTCrMMyJk4P9YCxgWKQdXPxwsPe4TlWKN_3Y-dgeNL2yoA/exec";
 const WHATSAPP_NUMBER = "595981614237";
 
-let isGuest = true;
 let user = null;
 let isStoreOpen = true;
 let activeModes = { normal: true, publica: false, dinamica: false, panchos: false, always: true };
 let activeItem = null;
+let globalLogs = [];
 
 const CATALOG = [
-  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Música durante la reunión.", fields: ['Canción'] },
-  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Música en tu momento preferido.", fields: ['Canción', 'Momento'] },
-  { id: 4, name: "Entrada Triunfal", price: 15, cat: 'normal', desc: "Música para la entrada ritualística.", fields: ['Canción'] },
-  { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Vetá una música.", fields: ['Canción prohibida'] },
-  { id: 7, name: "Mi tema (Pub)", price: 22, cat: 'publica', desc: "Música para la ceremonia pública.", fields: ['Canción'] },
-  { id: 14, name: "Freaky Friday", price: 55, cat: 'normal', desc: "Cambiá de cargo con una hermana.", fields: ['Con quién'] },
-  { id: 19, name: "Jeropanchill", price: 75, cat: 'panchos', desc: "Relajada mientras las demás ordenan.", fields: [] }
+  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión.", fields: ['Canción'] },
+  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Música en el momento de tu preferencia.", fields: ['Canción', 'Momento'] },
+  { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Decidí qué música NO va a sonar.", fields: ['Canción prohibida'] },
+  { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligá a hablar a una hermana.", fields: ['Nombre de la víctima'], upsell: true },
+  { id: 20, name: "Mención presidencial", price: 80, cat: 'publica', desc: "Mencionada por la Ilustre Preceptora.", fields: [], upsell: true }
+  // ... (Agregá aquí el resto de tus ítems del catálogo)
 ];
-
-function mostrarMensaje(texto) {
-    const toast = document.getElementById("toastMsg");
-    toast.innerText = texto;
-    toast.classList.add("show");
-    setTimeout(() => { toast.classList.remove("show"); }, 3500);
-}
-
-function closeM(id) { document.getElementById(id).style.display = 'none'; }
-function openHelp() { document.getElementById('modalHelp').style.display = 'flex'; }
 
 async function attemptLogin() {
     const n = document.getElementById('userInput').value;
     const p = document.getElementById('passInput').value;
-    if(!n || !p) return mostrarMensaje("Completa tus datos 🌸");
+    if(!n || !p) return mostrarMensaje("Completá tus datos 🌸");
     
-    const resp = await fetch(SCRIPT_URL);
-    const data = await resp.json();
+    try {
+        const resp = await fetch(SCRIPT_URL);
+        const data = await resp.json();
+        
+        // El script devuelve un objeto con {usuarios: [], logs: []}
+        const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase().includes(n.toLowerCase()) && h.password === p);
+        
+        if(n === "Jeroviana" && p === "9102021") {
+            user = { nombre: "Jeroviana", jeroCoins: 9999 };
+            document.getElementById('adminBar').style.display = 'block';
+        } else if (found) {
+            user = found;
+        } else {
+            return mostrarMensaje("Datos incorrectos 🌸");
+        }
 
-    if(n === "Jeroviana" && p === "9102021") {
-        user = { nombre: "Jeroviana", jeroCoins: 9999 };
-        document.getElementById('adminBar').style.display = 'block';
-    } else {
-        const found = data.usuarios.find(h => h.nombre.toLowerCase().includes(n.toLowerCase()) && h.password === p);
-        if(!found) return mostrarMensaje("Datos incorrectos 🌸");
-        user = found;
-    }
-
-    isGuest = false;
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('labelName').innerText = user.nombre;
-    document.getElementById('valCoins').innerText = user.jeroCoins;
-    document.getElementById('jeroBadge').style.display = 'block';
-    
-    updateUIVisuals(data.logs);
-    render();
+        globalLogs = data.logs || [];
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('labelName').innerText = user.nombre;
+        document.getElementById('valCoins').innerText = user.jeroCoins;
+        document.getElementById('jeroBadge').style.display = 'block';
+        
+        actualizarMuroYAdmin(globalLogs);
+        render();
+    } catch(e) { mostrarMensaje("Error al conectar 🌸"); }
 }
 
-function updateUIVisuals(logs) {
+function actualizarMuroYAdmin(logs) {
     const list = document.getElementById('muroList');
-    const adminTbody = document.getElementById('adminLogTable');
+    const adminBody = document.getElementById('adminLogsBody');
     const unaSemanaAtras = new Date();
     unaSemanaAtras.setDate(unaSemanaAtras.getDate() - 7);
 
-    // Solo mostramos en pantalla lo de los últimos 7 días
     const recientes = logs.filter(l => new Date(l.fecha) > unaSemanaAtras).reverse();
-
+    
     if(recientes.length > 0) {
-        list.innerHTML = recientes.map(l => `<li>✨ <b>${l.usuario}</b> canjeó: ${l.beneficio}</li>`).join('');
-        if(user.nombre === "Jeroviana") {
-            adminTbody.innerHTML = recientes.map(l => `<tr><td>${l.usuario}</td><td>${l.beneficio}</td><td>${l.especificacion}</td></tr>`).join('');
+        list.innerHTML = recientes.slice(0, 10).map(l => `<li>✨ <b>${l.usuario}</b> canjeó: ${l.beneficio}</li>`).join('');
+        if(user && user.nombre === "Jeroviana") {
+            adminBody.innerHTML = recientes.map(l => `<tr><td>${l.usuario}</td><td>${l.beneficio}</td><td>${l.especificacion}</td></tr>`).join('');
         }
+    } else {
+        list.innerHTML = '<li>Aún no hay canjes recientes.</li>';
     }
 }
 
@@ -246,52 +226,45 @@ function render() {
                 <div class="card">
                     <div class="card-body" onclick="toggleDesc(${i.id})">
                         <div class="card-title">${i.name}</div>
-                        <div class="click-hint">Toca para info</div>
+                        <div style="font-size:0.6rem; color:#aaa; margin-top:8px;">Toca para info 👇</div>
                     </div>
                     <div class="card-info" id="desc_${i.id}">${i.desc}</div>
                     <div class="card-footer">
-                        <button class="btn-price" onclick="openBuy(${i.id})" ${!isStoreOpen ? 'disabled' : ''}>${i.price} ✦</button>
+                        <button class="btn-price" onclick="openBuy(${i.id})" ${(!isStoreOpen || !user) ? 'disabled' : ''}>${i.price} ✦</button>
                     </div>
                 </div>`;
         }
     });
 }
 
-function toggleDesc(id) {
-    document.querySelectorAll('.card-info').forEach(el => { if(el.id !== 'desc_'+id) el.classList.remove('show'); });
-    document.getElementById('desc_'+id).classList.toggle('show');
-}
-
-function openBuy(id) {
-    if(!isStoreOpen || isGuest) return;
-    activeItem = CATALOG.find(i => i.id === id);
-    document.getElementById('buyTitle').innerText = activeItem.name;
-    const fields = document.getElementById('dynamicFields');
-    fields.innerHTML = activeItem.fields.map(f => `<label class="field-label">${f}</label><input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="Detalles...">`).join('');
-    document.getElementById('modalBuy').style.display = 'flex';
-}
-
 async function executePurchase() {
-    let specs = activeItem.fields.map(f => `${f}: ${document.getElementById('f_'+f.replace(/\s/g, '')).value}`).join(', ') || "Sin detalles";
-    if(user.jeroCoins < activeItem.price) return mostrarMensaje("No tienes suficientes ✦");
+    let cost = activeItem.price;
+    const isUp = activeItem.upsell && document.getElementById('upsellCheck').checked;
+    if(isUp) cost = Math.round(cost * 1.25);
 
-    // Enviar a WhatsApp
-    const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}\nDetalles: ${specs}\nCosto: ${activeItem.price} ✦`;
+    if(user.jeroCoins < cost) return mostrarMensaje("No tienes suficientes ✦");
+
+    let specs = activeItem.fields.map(f => `${f}: ${document.getElementById('f_'+f.replace(/\s/g, '')).value}`).join(', ');
+    if(isUp) specs += ` | Mensaje: ${document.getElementById('upsellMsg').value}`;
+
+    const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}\nDetalles: ${specs}\nCosto: ${cost} ✦`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
 
-    // Guardar en Excel
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "PURCHASE", user: user.nombre, item: activeItem.name, cost: activeItem.price, specs: specs }) });
+    await fetch(SCRIPT_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ action: "PURCHASE", user: user.nombre, item: activeItem.name, cost: cost, specs: specs }) 
+    });
 
-    // Actualizar visualmente
-    const list = document.getElementById('muroList');
-    if(list.innerText.includes("Aún no hay canjes")) list.innerHTML = '';
-    list.insertAdjacentHTML('afterbegin', `<li>✨ <b>${user.nombre}</b> canjeó: ${activeItem.name}</li>`);
-    
-    user.jeroCoins -= activeItem.price;
+    user.jeroCoins -= cost;
     document.getElementById('valCoins').innerText = user.jeroCoins;
     closeM('modalBuy');
     mostrarMensaje("¡Canje realizado! ✦");
     lanzarConfeti();
+    
+    // Agregar al muro localmente para feedback inmediato
+    const li = document.createElement('li');
+    li.innerHTML = `✨ <b>${user.nombre}</b> canjeó: ${activeItem.name}`;
+    document.getElementById('muroList').prepend(li);
 }
 
 function toggleMasterSwitch() {
@@ -300,30 +273,80 @@ function toggleMasterSwitch() {
     btn.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
     btn.classList.toggle('off', !isStoreOpen);
     
-    // LIMPIEZA VISUAL (No borra el Excel)
-    document.getElementById('muroList').innerHTML = '<li id="emptyMuro">Tienda cerrada / Se reinició la sesión.</li>';
-    document.getElementById('adminLogTable').innerHTML = '';
-    
+    if(!isStoreOpen) {
+        // LIMPIEZA VISUAL AL APAGAR
+        document.getElementById('muroList').innerHTML = '<li>Tienda en pausa.</li>';
+        document.getElementById('adminLogsBody').innerHTML = '';
+    } else {
+        actualizarMuroYAdmin(globalLogs); // Restaurar al encender
+    }
     render();
 }
 
-function toggleMode(modName) {
-    activeModes[modName] = !activeModes[modName];
-    render();
+function toggleDesc(id) {
+    const el = document.getElementById('desc_' + id);
+    const wasOpen = el.classList.contains('show');
+    document.querySelectorAll('.card-info').forEach(d => d.classList.remove('show'));
+    if(!wasOpen) el.classList.add('show');
+}
+
+function openBuy(id) {
+    activeItem = CATALOG.find(i => i.id === id);
+    document.getElementById('buyTitle').innerText = activeItem.name;
+    const fields = document.getElementById('dynamicFields');
+    fields.innerHTML = activeItem.fields.map(f => `<label class="field-label">${f}</label><input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="...">`).join('');
+    
+    const up = document.getElementById('upsellSection');
+    if(activeItem.upsell) {
+        up.classList.remove('hidden');
+        document.getElementById('upsellCheck').checked = false;
+        document.getElementById('upsellMsg').style.display = 'none';
+    } else { up.classList.add('hidden'); }
+    
+    document.getElementById('modalBuy').style.display = 'flex';
+}
+
+function updateUpsellUI() { document.getElementById('upsellMsg').style.display = document.getElementById('upsellCheck').checked ? 'block' : 'none'; }
+function enterAsGuest() { document.getElementById('authOverlay').style.display = 'none'; render(); }
+function closeM(id) { document.getElementById(id).style.display = 'none'; }
+function openHelp() { document.getElementById('modalHelp').style.display = 'flex'; }
+
+function mostrarMensaje(t) {
+    const toast = document.getElementById("toastMsg");
+    toast.innerText = t; toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3500);
 }
 
 function lanzarConfeti() {
-    for (let i = 0; i < 30; i++) {
+    const colores = ['#e91e63', '#d4af37', '#f8bbd0', '#00A859'];
+    for (let i = 0; i < 40; i++) {
         let conf = document.createElement('div');
         conf.className = 'confetti';
         conf.style.left = Math.random() * 100 + 'vw';
-        conf.style.backgroundColor = ['#e91e63','#d4af37','#f8bbd0'][Math.floor(Math.random()*3)];
-        conf.style.width = '10px'; conf.style.height = '10px';
+        conf.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+        conf.style.width = '8px'; conf.style.height = '8px';
         conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
         document.body.appendChild(conf);
         setTimeout(() => conf.remove(), 4000);
     }
 }
+
+function toggleMode(mod) {
+    activeModes[mod] = !activeModes[mod];
+    const btnId = 'btnMode' + mod.charAt(0).toUpperCase() + mod.slice(1,4);
+    document.getElementById(btnId).classList.toggle('active', activeModes[mod]);
+    render();
+}
+
+async function closeMonth() {
+    if(confirm("¿Cerrar el mes y premiar al podio?")) {
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
+        mostrarMensaje("¡Mes cerrado! ✨");
+        setTimeout(() => location.reload(), 2500);
+    }
+}
+
+render();
 </script>
 </body>
 </html>
