@@ -359,14 +359,29 @@ async function toggleMasterSwitch() {
     const newState = isStoreOpen ? "CLOSED" : "OPEN";
     mostrarMensaje(newState === "CLOSED" ? "Cerrando tienda y archivando compras..." : "Abriendo tienda...");
     
-    // Enviar comando al servidor (si es CLOSED, el script archivará las compras)
     await fetch(SCRIPT_URL + "?source=store", {
         method: 'POST',
         body: JSON.stringify({ action: "TOGGLE_STORE", state: newState })
     });
     
-    // Recargar la página para reflejar el nuevo estado limpio
-    location.reload();
+    // Actualizar estado local sin recargar
+    isStoreOpen = !isStoreOpen;
+    const btn = document.getElementById('btnMasterToggle');
+    btn.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
+    btn.classList.toggle('off', !isStoreOpen);
+    
+    if (!isStoreOpen) {
+        // Limpiar el muro y el panel de admin localmente
+        document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. Los canjes se archivaron automáticamente ✨</li>';
+        if (user && user.nombre === "Jeroviana") {
+            document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Compras archivadas</td></tr>';
+        }
+    } else {
+        // Si se abre la tienda, recargar los datos del servidor (ya vendrán limpios)
+        await recargarDatosAlAbrirTienda();
+    }
+    
+    render(); // Volver a pintar los productos (se ocultarán o mostrarán según isStoreOpen)
 }
 
 function toggleDesc(id) {
