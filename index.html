@@ -127,7 +127,8 @@
   </div>
   <div class="admin-table-container">
     <table class="admin-table">
-      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalles Específicos</th></tr></thead>
+      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalles Específicos</th></tr>
+      </thead>
       <tbody id="adminLogsBody"></tbody>
     </table>
   </div>
@@ -187,7 +188,7 @@ const CATALOG = [
   { id: 12, name: "Insta baddie", price: 45, cat: 'always', desc: "Historia dedicada por meses en podio.", fields: ['Mensaje'] },
   { id: 13, name: "De chill normal", price: 50, cat: 'normal', desc: "Mirá cómo ordenan sentada y relajada.", fields: [] },
   { id: 14, name: "Freaky Friday", price: 55, cat: 'normal', desc: "Cambiá de cargo con la hermana que elijas.", fields: ['Con quién querés cambiar'] },
-  { id: 15, name: "Baby no", price: 55, cat: 'normal', desc: "Negate al cambio de cargos.", fields: [] },
+  { id: 15, name: "Baby no", price: 55, cat: 'normal', desc: "Negate al cambio de cargos.", fields: ['Canción que NO querés que suene'] },
   { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligá a hablar a una hermana.", fields: ['Nombre de la víctima'], upsell: true },
   { id: 17, name: "Me da wewencha", price: 65, cat: 'publica', desc: "Negate a tu obligación de hablar.", fields: [] },
   { id: 18, name: "RE de chill", price: 70, cat: 'publica', desc: "Mirá cómo ordenan el templo sin hacer nada.", fields: [] },
@@ -206,14 +207,13 @@ async function attemptLogin() {
         
         const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase() === n.toLowerCase() && h.password === p);
         
-        // Cargar estado de la tienda que mandó el servidor
         if(data.storeState === "CLOSED") isStoreOpen = false;
+        else isStoreOpen = true;
         
         if(n === "Jeroviana" && p === "9102021") {
             user = { nombre: "Jeroviana", jeroCoins: 9999 };
             document.getElementById('adminBar').style.display = 'block';
             
-            // Actualizar botón admin según el estado real
             const btnT = document.getElementById('btnMasterToggle');
             btnT.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
             btnT.classList.toggle('off', !isStoreOpen);
@@ -232,7 +232,7 @@ async function attemptLogin() {
         
         if(isStoreOpen) actualizarMuroYAdmin(globalLogs);
         else {
-           document.getElementById('muroList').innerHTML = '<li>Tienda en pausa. Volvemos en la próxima reunión.</li>';
+           document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. ¡La próxima semana hay más! ✨</li>';
         }
         render();
     } catch(e) { mostrarMensaje("Cargando la tienda, aguardá un segundo... 🌸"); }
@@ -257,14 +257,29 @@ function actualizarMuroYAdmin(logs) {
             adminBody.innerHTML = recientes.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
         }
     } else {
-        list.innerHTML = '<li>Aún no hay canjes recientes. ¡Sé la primera!</li>';
+        list.innerHTML = '<li>✨ Aún no hay canjes recientes. ¡Sé la primera en canjear! ✨</li>';
+        if(user && user.nombre === "Jeroviana") adminBody.innerHTML = '<tr><td colspan="3">Sin canjes esta semana</td></tr>';
     }
+}
+
+function limpiarMuroYSemana() {
+    document.getElementById('muroList').innerHTML = '<li>✨ Nueva semana, nuevos canjes disponibles ✨</li>';
+    if(user && user.nombre === "Jeroviana") {
+        document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Esperando canjes de esta semana...</td></tr>';
+    }
+    globalLogs = [];
 }
 
 function render() {
     const g = document.getElementById('grid');
     g.innerHTML = '';
-    document.getElementById('storeClosedMsg').style.display = isStoreOpen ? 'none' : 'block';
+    
+    if (!isStoreOpen) {
+        document.getElementById('storeClosedMsg').style.display = 'block';
+        return;
+    }
+    
+    document.getElementById('storeClosedMsg').style.display = 'none';
     
     CATALOG.forEach(i => {
         if(activeModes[i.cat]) {
@@ -321,14 +336,12 @@ function toggleMasterSwitch() {
     btn.classList.toggle('off', !isStoreOpen);
     
     if(!isStoreOpen) {
-        document.getElementById('muroList').innerHTML = '<li>Tienda en pausa. Volvemos en la próxima reunión.</li>';
-        document.getElementById('adminLogsBody').innerHTML = '';
+        limpiarMuroYSemana();
     } else {
         actualizarMuroYAdmin(globalLogs);
     }
     render();
     
-    // Le avisa al servidor que guarde el estado
     fetch(SCRIPT_URL + "?source=store", {
         method: 'POST',
         body: JSON.stringify({ action: "TOGGLE_STORE", state: isStoreOpen ? "OPEN" : "CLOSED" })
@@ -391,13 +404,13 @@ function toggleMode(cat, btnId) {
 }
 
 async function closeMonth() {
-    if(confirm("¿Estás segura de cerrar el mes? Esto procesará los puntos en el Excel, los sumará a JeroCoins, y limpiará el tablero para empezar de cero.")) {
-        mostrarMensaje("Cerrando mes... Aguardá un momento 🌸");
+    if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5)\n✅ Sumar +1 mes en podio\n❌ NO se va a borrar NADA de los puntajes\n\n¿Deseas continuar?")) {
+        mostrarMensaje("Cerrando mes... Procesando podio 🌸");
         
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
         
-        mostrarMensaje("¡Mes cerrado y podio premiado exitosamente! ✨");
-        setTimeout(() => location.reload(), 2500);
+        mostrarMensaje("✨ ¡Mes cerrado exitosamente! Podio premiado ✨");
+        setTimeout(() => location.reload(), 2000);
     }
 }
 
