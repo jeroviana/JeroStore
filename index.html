@@ -37,8 +37,8 @@
 
   .muro-container { max-width: 1100px; margin: 20px auto 0; padding: 15px 20px; background: white; border-radius: 15px; border: 1px dashed var(--rosa-principal); box-shadow: var(--sombra); }
   .muro-container h3 { font-size: 0.9rem; margin: 0 0 10px 0; color: var(--rosa-fuerte); display: flex; align-items: center; gap: 5px; }
-  .muro-list { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; max-height: 100px; overflow-y: auto; }
-  .muro-list li { padding: 5px 0; border-bottom: 1px solid #f5f5f5; }
+  .muro-list { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; max-height: 150px; overflow-y: auto; }
+  .muro-list li { padding: 8px 0; border-bottom: 1px solid #f5f5f5; line-height: 1.4; }
   .store-closed-msg { text-align: center; color: var(--rosa-fuerte); font-weight: 700; padding: 10px; background: var(--rosa-pastel); border-radius: 10px; margin-top: 15px; display: none; }
 
   .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 200; }
@@ -47,16 +47,16 @@
   .btn-main { background: var(--rosa-fuerte); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
   .btn-guest { background: none; border: none; color: #aaa; font-size: 0.8rem; text-decoration: underline; margin-top: 15px; cursor: pointer; }
 
-  .admin-bar { background: #fff; margin: 20px; padding: 15px; border-radius: 15px; border: 2px solid var(--rosa-principal); display: none; }
+  .admin-bar { background: #fff; margin: 20px auto; max-width: 1000px; padding: 15px; border-radius: 15px; border: 2px solid var(--rosa-principal); display: none; margin-left: 20px; margin-right: 20px; }
   .controls { display: flex; flex-wrap: wrap; gap: 8px; }
-  .toggle { padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
-  .toggle.active { background: var(--rosa-principal); }
+  .toggle { padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; color: #666; }
+  .toggle.active { background: var(--rosa-principal); color: var(--texto); border-color: var(--rosa-principal); }
   .toggle-master { background: #00A859; color: white; border: none; }
   .toggle-master.off { background: #D8303B; }
   
-  .admin-table-container { margin-top: 15px; max-height: 150px; overflow-y: auto; }
-  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-  .admin-table th { background: var(--rosa-pastel); padding: 8px; text-align: left; }
+  .admin-table-container { margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+  .admin-table th { background: var(--rosa-pastel); padding: 8px; text-align: left; position: sticky; top: 0; }
   .admin-table td { padding: 8px; border-bottom: 1px solid #eee; }
 
   .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
@@ -68,11 +68,14 @@
   .card-info.show { max-height: 200px; padding: 15px; border-top: 1px dashed var(--rosa-pastel); }
   .card-footer { padding: 12px; background: var(--fondo); border-top: 1px solid var(--rosa-pastel); border-radius: 0 0 15px 15px; }
   .btn-price { width: 100%; background: white; border: 1px solid var(--rosa-principal); padding: 10px; border-radius: 10px; font-weight: 800; color: var(--rosa-fuerte); cursor: pointer; }
-  .btn-price:disabled { background: #eee; color: #aaa; }
+  .btn-price:disabled { background: #eee; color: #aaa; border-color: #ddd; cursor: not-allowed; }
 
   .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 300; }
-  .modal-content { background: white; padding: 30px 20px; border-radius: 20px; width: 85%; max-width: 340px; border-top: 5px solid var(--rosa-fuerte); }
-  .toast { visibility: hidden; min-width: 250px; background-color: var(--rosa-fuerte); color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: 0.3s; }
+  .modal-content { background: white; padding: 30px 20px; border-radius: 20px; width: 85%; max-width: 340px; border-top: 5px solid var(--rosa-fuerte); max-height: 90vh; overflow-y: auto;}
+  .modal-content h2 { font-family: 'Playfair Display'; font-size: 1.3rem; margin: 0 0 10px 0; text-align: center; color: var(--rosa-fuerte); }
+  .field-label { display: block; font-size: 0.7rem; font-weight: 700; color: #888; margin: 15px 0 5px 5px; text-transform: uppercase; }
+  
+  .toast { visibility: hidden; min-width: 250px; background-color: var(--rosa-fuerte); color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: 0.3s; font-weight: 600; font-size: 0.85rem;}
   .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
   .confetti { position: fixed; width: 10px; height: 10px; z-index: 9998; animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -95,11 +98,11 @@
 </header>
 
 <div class="muro-container" id="muroSection">
-  <h3>✨ Novedades de la Semana</h3>
-  <ul class="muro-list" id="muroList"><li id="emptyMuro">Cargando novedades...</li></ul>
+  <h3>✨ Novedades de la Asamblea</h3>
+  <ul class="muro-list" id="muroList"><li id="emptyMuro">Cargando chismes y canjes...</li></ul>
 </div>
 
-<div class="store-closed-msg" id="storeClosedMsg">🛑 La tienda está cerrada hasta la próxima reunión.</div>
+<div class="store-closed-msg" id="storeClosedMsg">🛑 La tienda está en pausa. ¡Nos vemos en la próxima reunión!</div>
 
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-card">
@@ -113,18 +116,18 @@
 </div>
 
 <div class="admin-bar" id="adminBar">
-  <h3>Panel Administrativo</h3>
+  <h3>Panel de Jeroviana 👑</h3>
   <div class="controls">
     <button class="toggle toggle-master" id="btnMasterToggle" onclick="toggleMasterSwitch()">Tienda: ON</button>
-    <button class="toggle active" id="btnModeNorm" onclick="toggleMode('normal')">Reunión Regular</button>
-    <button class="toggle" id="btnModePub" onclick="toggleMode('publica')">Ceremonia Pública</button>
-    <button class="toggle" id="btnModeDina" onclick="toggleMode('dinamica')">Dinámica</button>
-    <button class="toggle" id="btnModePan" onclick="toggleMode('panchos')">Panchos</button>
+    <button class="toggle active" id="btn_normal" onclick="toggleMode('normal', 'btn_normal')">Reunión Regular</button>
+    <button class="toggle" id="btn_publica" onclick="toggleMode('publica', 'btn_publica')">Ceremonia Pública</button>
+    <button class="toggle" id="btn_dinamica" onclick="toggleMode('dinamica', 'btn_dinamica')">Dinámica</button>
+    <button class="toggle" id="btn_panchos" onclick="toggleMode('panchos', 'btn_panchos')">Panchos</button>
     <button class="toggle" style="background: var(--oro); color: white; border:none; width: 100%; margin-top:5px;" onclick="closeMonth()">Cerrar Mes ✨</button>
   </div>
   <div class="admin-table-container">
     <table class="admin-table">
-      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalle</th></tr></thead>
+      <thead><tr><th>Hermanita</th><th>Canje</th><th>Detalles Específicos</th></tr></thead>
       <tbody id="adminLogsBody"></tbody>
     </table>
   </div>
@@ -136,34 +139,62 @@
   <div class="modal-content">
     <h2 id="buyTitle"></h2>
     <div id="dynamicFields"></div>
-    <div id="upsellSection" class="hidden">
+    <div id="upsellSection" class="hidden" style="margin-top: 15px; padding: 12px; background: #fff9fb; border: 1px solid var(--rosa-principal); border-radius: 12px;">
       <label style="font-size: 0.8rem; font-weight: 600; color: var(--rosa-fuerte); display: flex; align-items: center; gap: 8px;">
         <input type="checkbox" id="upsellCheck" onchange="updateUpsellUI()"> Especificar mensaje (+25%)
       </label>
-      <input type="text" id="upsellMsg" placeholder="¿Qué debe decir?" style="display:none; margin-top:10px;">
+      <input type="text" id="upsellMsg" placeholder="¿Qué debe decir exactamente?" style="display:none; margin-top:10px;">
     </div>
     <button class="btn-main" style="margin-top:20px" onclick="executePurchase()">Confirmar Canje</button>
     <button class="btn-guest" style="width:100%" onclick="closeM('modalBuy')">Cancelar</button>
   </div>
 </div>
 
+<div class="modal" id="modalHelp">
+  <div class="modal-content">
+    <h2>Reglas JeroStore</h2>
+    <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">
+      <b>¿Cómo funciona?</b><br>Toca cualquier tarjeta para leer la descripción del privilegio.<br><br>
+      <b>Canjes:</b><br>Al tocar el botón del precio, completas tus detalles. El pago se descuenta automáticamente sin salir de la página.<br><br>
+      <b>Muro:</b> ¡Todo lo que canjees aparecerá en las novedades para que todas lo vean!
+    </p>
+    <button class="btn-main" onclick="closeM('modalHelp')">Entendido</button>
+  </div>
+</div>
+
 <script>
+// ACORDATE DE ASEGURARTE QUE EL SCRIPT DE GOOGLE TENGA EL ?source=store COMO HABLAMOS
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbnRBGyL2Uo84GD6yB9kRwCTCrMMyJk4P9YCxgWKQdXPxwsPe4TlWKN_3Y-dgeNL2yoA/exec";
-const WHATSAPP_NUMBER = "595981614237";
 
 let user = null;
+let isGuest = true;
 let isStoreOpen = true;
 let activeModes = { normal: true, publica: false, dinamica: false, panchos: false, always: true };
 let activeItem = null;
 let globalLogs = [];
 
+// Tu catálogo completo original de 20 ítems con categorías corregidas
 const CATALOG = [
-  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión.", fields: ['Canción'] },
-  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Música en el momento de tu preferencia.", fields: ['Canción', 'Momento'] },
+  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
+  { id: 2, name: "Yo organizo", price: 8, cat: 'dinamica', desc: "Elegís el orden de participación en la dinámica.", fields: [] },
+  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Elegí una música que sonará en el momento de tu preferencia.", fields: ['Canción', 'Momento'] },
+  { id: 4, name: "Entrada Triunfal", price: 15, cat: 'normal', desc: "Música para la entrada ritualística.", fields: ['Canción'] },
+  { id: 5, name: "Salida Triunfal", price: 18, cat: 'normal', desc: "Música para la salida ritualística.", fields: ['Canción'] },
   { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Decidí qué música NO va a sonar.", fields: ['Canción prohibida'] },
+  { id: 7, name: "Mi tema", price: 22, cat: 'publica', desc: "Música para la ceremonia pública (cuando Armonía decida).", fields: ['Canción'] },
+  { id: 8, name: "Momento epico (Pub)", price: 25, cat: 'publica', desc: "Música para la ceremonia pública en el momento que elijas.", fields: ['Canción', 'Momento'] },
+  { id: 9, name: "Entrada Triunfal", price: 30, cat: 'publica', desc: "Música para la entrada de la ceremonia pública.", fields: ['Canción'] },
+  { id: 10, name: "Salida epica", price: 35, cat: 'publica', desc: "Música para la salida de la ceremonia pública.", fields: ['Canción'] },
+  { id: 11, name: "Gordichan", price: 40, cat: 'publica', desc: "Elegí los bocaditos y hacé especificaciones.", fields: ['Lugar', 'Especificaciones'] },
+  { id: 12, name: "Insta baddie", price: 45, cat: 'always', desc: "Historia dedicada por meses en podio.", fields: ['Mensaje'] },
+  { id: 13, name: "De chill normal", price: 50, cat: 'normal', desc: "Mirá cómo ordenan sentada y relajada.", fields: [] },
+  { id: 14, name: "Freaky Friday", price: 55, cat: 'normal', desc: "Cambiá de cargo con la hermana que elijas.", fields: ['Con quién querés cambiar'] },
+  { id: 15, name: "Baby no", price: 55, cat: 'normal', desc: "Negate al cambio de cargos.", fields: [] },
   { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligá a hablar a una hermana.", fields: ['Nombre de la víctima'], upsell: true },
+  { id: 17, name: "Me da wewencha", price: 65, cat: 'publica', desc: "Negate a tu obligación de hablar.", fields: [] },
+  { id: 18, name: "RE de chill", price: 70, cat: 'publica', desc: "Mirá cómo ordenan el templo sin hacer nada.", fields: [] },
+  { id: 19, name: "Jeropanchill", price: 75, cat: 'panchos', desc: "Mirá cómo ordenan sentada sin tener que hacer nada.", fields: [] },
   { id: 20, name: "Mención presidencial", price: 80, cat: 'publica', desc: "Mencionada por la Ilustre Preceptora.", fields: [], upsell: true }
-  // ... (Agregá aquí el resto de tus ítems del catálogo)
 ];
 
 async function attemptLogin() {
@@ -175,14 +206,14 @@ async function attemptLogin() {
         const resp = await fetch(SCRIPT_URL + "?source=store");
         const data = await resp.json();
         
-        // El script devuelve un objeto con {usuarios: [], logs: []}
-        const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase().includes(n.toLowerCase()) && h.password === p);
+        const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase() === n.toLowerCase() && h.password === p);
         
         if(n === "Jeroviana" && p === "9102021") {
             user = { nombre: "Jeroviana", jeroCoins: 9999 };
             document.getElementById('adminBar').style.display = 'block';
         } else if (found) {
             user = found;
+            isGuest = false;
         } else {
             return mostrarMensaje("Datos incorrectos 🌸");
         }
@@ -195,7 +226,13 @@ async function attemptLogin() {
         
         actualizarMuroYAdmin(globalLogs);
         render();
-    } catch(e) { mostrarMensaje("Error al conectar 🌸"); }
+    } catch(e) { mostrarMensaje("Cargando la tienda, aguardá un segundo... 🌸"); }
+}
+
+// Armador de frases orgánicas para el Muro
+function armarFraseOrganica(usuario, beneficio, specs) {
+    if (!specs || specs.trim() === "") return `✨ ¡<b>${usuario}</b> aseguró su <b>${beneficio}</b>!`;
+    return `✨ ¡<b>${usuario}</b> acaba de canjear <b>${beneficio}</b>! <i>(Detalles: ${specs})</i>`;
 }
 
 function actualizarMuroYAdmin(logs) {
@@ -207,12 +244,12 @@ function actualizarMuroYAdmin(logs) {
     const recientes = logs.filter(l => new Date(l.fecha) > unaSemanaAtras).reverse();
     
     if(recientes.length > 0) {
-        list.innerHTML = recientes.slice(0, 10).map(l => `<li>✨ <b>${l.usuario}</b> canjeó: ${l.beneficio}</li>`).join('');
+        list.innerHTML = recientes.slice(0, 10).map(l => `<li>${armarFraseOrganica(l.usuario, l.beneficio, l.especificacion)}</li>`).join('');
         if(user && user.nombre === "Jeroviana") {
-            adminBody.innerHTML = recientes.map(l => `<tr><td>${l.usuario}</td><td>${l.beneficio}</td><td>${l.especificacion}</td></tr>`).join('');
+            adminBody.innerHTML = recientes.map(l => `<tr><td><b>${l.usuario}</b></td><td>${l.beneficio}</td><td>${l.especificacion || "-"}</td></tr>`).join('');
         }
     } else {
-        list.innerHTML = '<li>Aún no hay canjes recientes.</li>';
+        list.innerHTML = '<li>Aún no hay canjes recientes. ¡Sé la primera!</li>';
     }
 }
 
@@ -220,6 +257,7 @@ function render() {
     const g = document.getElementById('grid');
     g.innerHTML = '';
     document.getElementById('storeClosedMsg').style.display = isStoreOpen ? 'none' : 'block';
+    
     CATALOG.forEach(i => {
         if(activeModes[i.cat]) {
             g.innerHTML += `
@@ -230,41 +268,47 @@ function render() {
                     </div>
                     <div class="card-info" id="desc_${i.id}">${i.desc}</div>
                     <div class="card-footer">
-                        <button class="btn-price" onclick="openBuy(${i.id})" ${(!isStoreOpen || !user) ? 'disabled' : ''}>${i.price} ✦</button>
+                        <button class="btn-price" onclick="openBuy(${i.id})" ${(!isStoreOpen || isGuest) ? 'disabled' : ''}>${i.price} ✦</button>
                     </div>
                 </div>`;
         }
     });
 }
 
+// Adiós WhatsApp. Todo local.
 async function executePurchase() {
     let cost = activeItem.price;
     const isUp = activeItem.upsell && document.getElementById('upsellCheck').checked;
     if(isUp) cost = Math.round(cost * 1.25);
 
-    if(user.jeroCoins < cost) return mostrarMensaje("No tienes suficientes ✦");
+    if(user.jeroCoins < cost) return mostrarMensaje("No tenés suficientes ✦ para este privilegio.");
 
-    let specs = activeItem.fields.map(f => `${f}: ${document.getElementById('f_'+f.replace(/\s/g, '')).value}`).join(', ');
-    if(isUp) specs += ` | Mensaje: ${document.getElementById('upsellMsg').value}`;
-
-    const msg = `✨ CANJE JEROSTORE ✨\n${user.nombre} canjeó: ${activeItem.name}\nDetalles: ${specs}\nCosto: ${cost} ✦`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
-
-    await fetch(SCRIPT_URL, { 
-        method: 'POST', 
-        body: JSON.stringify({ action: "PURCHASE", user: user.nombre, item: activeItem.name, cost: cost, specs: specs }) 
+    // Recopilar especificaciones
+    let specsArray = [];
+    activeItem.fields.forEach(f => {
+        let val = document.getElementById('f_'+f.replace(/\s/g, '')).value;
+        if(val) specsArray.push(`${f}: ${val}`);
     });
+    if(isUp) specsArray.push(`Mensaje: ${document.getElementById('upsellMsg').value}`);
+    let specs = specsArray.join(', ');
 
+    // Mostrar mensaje de éxito rápido en pantalla
     user.jeroCoins -= cost;
     document.getElementById('valCoins').innerText = user.jeroCoins;
     closeM('modalBuy');
-    mostrarMensaje("¡Canje realizado! ✦");
+    mostrarMensaje("¡Canje guardado exitosamente! ✦");
     lanzarConfeti();
     
-    // Agregar al muro localmente para feedback inmediato
+    // Agregar al muro de inmediato sin esperar al server
     const li = document.createElement('li');
-    li.innerHTML = `✨ <b>${user.nombre}</b> canjeó: ${activeItem.name}`;
+    li.innerHTML = armarFraseOrganica(user.nombre, activeItem.name, specs);
     document.getElementById('muroList').prepend(li);
+
+    // Enviar a Google Sheets en segundo plano
+    fetch(SCRIPT_URL + "?source=store", { 
+        method: 'POST', 
+        body: JSON.stringify({ action: "PURCHASE", user: user.nombre, item: activeItem.name, cost: cost, specs: specs }) 
+    });
 }
 
 function toggleMasterSwitch() {
@@ -274,11 +318,10 @@ function toggleMasterSwitch() {
     btn.classList.toggle('off', !isStoreOpen);
     
     if(!isStoreOpen) {
-        // LIMPIEZA VISUAL AL APAGAR
-        document.getElementById('muroList').innerHTML = '<li>Tienda en pausa.</li>';
+        document.getElementById('muroList').innerHTML = '<li>Tienda en pausa. Volvemos en la próxima reunión.</li>';
         document.getElementById('adminLogsBody').innerHTML = '';
     } else {
-        actualizarMuroYAdmin(globalLogs); // Restaurar al encender
+        actualizarMuroYAdmin(globalLogs);
     }
     render();
 }
@@ -294,13 +337,14 @@ function openBuy(id) {
     activeItem = CATALOG.find(i => i.id === id);
     document.getElementById('buyTitle').innerText = activeItem.name;
     const fields = document.getElementById('dynamicFields');
-    fields.innerHTML = activeItem.fields.map(f => `<label class="field-label">${f}</label><input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="...">`).join('');
+    fields.innerHTML = activeItem.fields.map(f => `<label class="field-label">${f}</label><input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="Completar...">`).join('');
     
     const up = document.getElementById('upsellSection');
     if(activeItem.upsell) {
         up.classList.remove('hidden');
         document.getElementById('upsellCheck').checked = false;
         document.getElementById('upsellMsg').style.display = 'none';
+        document.getElementById('upsellMsg').value = '';
     } else { up.classList.add('hidden'); }
     
     document.getElementById('modalBuy').style.display = 'flex';
@@ -318,7 +362,7 @@ function mostrarMensaje(t) {
 }
 
 function lanzarConfeti() {
-    const colores = ['#e91e63', '#d4af37', '#f8bbd0', '#00A859'];
+    const colores = ['#e91e63', '#d4af37', '#f8bbd0', '#00A859', '#00AFEF'];
     for (let i = 0; i < 40; i++) {
         let conf = document.createElement('div');
         conf.className = 'confetti';
@@ -331,17 +375,21 @@ function lanzarConfeti() {
     }
 }
 
-function toggleMode(mod) {
-    activeModes[mod] = !activeModes[mod];
-    const btnId = 'btnMode' + mod.charAt(0).toUpperCase() + mod.slice(1,4);
-    document.getElementById(btnId).classList.toggle('active', activeModes[mod]);
+// Ahora la función de los botones funciona perfectamente recibiendo el ID directo
+function toggleMode(cat, btnId) {
+    activeModes[cat] = !activeModes[cat];
+    document.getElementById(btnId).classList.toggle('active', activeModes[cat]);
     render();
 }
 
 async function closeMonth() {
-    if(confirm("¿Cerrar el mes y premiar al podio?")) {
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
-        mostrarMensaje("¡Mes cerrado! ✨");
+    if(confirm("¿Estás segura de cerrar el mes? Esto procesará los puntos en el Excel y limpiará el registro.")) {
+        // Le mostramos a Jeroviana que algo está pasando para que no crea que se tildó
+        mostrarMensaje("Cerrando mes... Aguardá un momento 🌸");
+        
+        await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
+        
+        mostrarMensaje("¡Mes cerrado y podio premiado exitosamente! ✨");
         setTimeout(() => location.reload(), 2500);
     }
 }
