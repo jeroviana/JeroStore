@@ -204,26 +204,26 @@ function guardarFiltros() {
 }
 
 const CATALOG = [
-  { id: 1, name: "Este es mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
+  { id: 1, name: "Mi tema", price: 5, cat: 'normal', desc: "Elegí una música que sonará durante la reunión del sábado.", fields: ['Canción'] },
   { id: 2, name: "Yo organizo", price: 8, cat: 'dinamica', desc: "Elegís el orden de participación en la dinámica.", fields: [] },
-  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Elegí una música que sonará en el momento de tu preferencia.", fields: ['Canción', 'Momento'] },
+  { id: 3, name: "Momento epico", price: 12, cat: 'normal', desc: "Podes elegir una música en esta reunion... Para que suene cuando quieras!!", fields: ['Canción', 'Momento'] },
   { id: 4, name: "Entrada Triunfal", price: 15, cat: 'normal', desc: "Música para la entrada ritualística.", fields: ['Canción'] },
   { id: 5, name: "Salida Triunfal", price: 18, cat: 'normal', desc: "Música para la salida ritualística.", fields: ['Canción'] },
   { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Decidí qué música NO va a sonar.", fields: ['Canción prohibida'] },
-  { id: 7, name: "Mi tema", price: 22, cat: 'publica', desc: "Música para la ceremonia pública (cuando Armonía decida).", fields: ['Canción'] },
-  { id: 8, name: "Momento epico (Pub)", price: 25, cat: 'publica', desc: "Música para la ceremonia pública en el momento que elijas.", fields: ['Canción', 'Momento'] },
+  { id: 7, name: "Mi tema", price: 22, cat: 'publica', desc: "Elgi una música para que suene en la pública (cuando Armonía decida).", fields: ['Canción'] },
+  { id: 8, name: "Momento epico", price: 25, cat: 'publica', desc: "Música para la ceremonia pública en el momento que VOS elijas.", fields: ['Canción', 'Momento'] },
   { id: 9, name: "Entrada Triunfal", price: 30, cat: 'publica', desc: "Música para la entrada de la ceremonia pública.", fields: ['Canción'] },
   { id: 10, name: "Salida epica", price: 35, cat: 'publica', desc: "Música para la salida de la ceremonia pública.", fields: ['Canción'] },
-  { id: 11, name: "Gordichan", price: 40, cat: 'publica', desc: "Elegí los bocaditos y hacé especificaciones.", fields: ['Lugar', 'Especificaciones'] },
-  { id: 12, name: "Insta baddie", price: 45, cat: 'always', desc: "Historia dedicada por meses en podio.", fields: ['Mensaje'] },
-  { id: 13, name: "De chill normal", price: 50, cat: 'normal', desc: "Mirá cómo ordenan sentada y relajada.", fields: [] },
+  { id: 11, name: "Gordichan", price: 40, cat: 'publica', desc: "Elegí los bocaditos y hacé las especificaciones que quieras.", fields: ['Lugar', 'Especificaciones'] },
+  { id: 12, name: "Insta baddie", price: 45, cat: 'always', desc: "La asamblea va a subir una historia a instagram con una descripción que vos elijas y diciendo como te destacas en nuestra asamblea", fields: ['Mensaje'] },
+  { id: 13, name: "De chill", price: 50, cat: 'normal', desc: "No vas a tener que limpiar, ordenar ni ayudar en nada en la reunión", fields: [] },
   { id: 14, name: "Freaky Friday", price: 55, cat: 'normal', desc: "Cambiá de cargo con la hermana que elijas.", fields: ['Con quién querés cambiar'] },
-  { id: 15, name: "Baby no", price: 55, cat: 'normal', desc: "Negate al cambio de cargos.", fields: ['Canción que NO querés que suene'] },
-  { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligá a hablar a una hermana.", fields: ['Nombre de la víctima'], upsell: true },
+  { id: 15, name: "Baby no", price: 55, cat: 'normal', desc: "Negate al cambio de cargos que otra hermana pagó!!", fields: ['Canción que NO querés que suene'] },
+  { id: 16, name: "Don't be shy", price: 65, cat: 'publica', desc: "Obligá a hablar a una hermana en el momento de la palabra. (Si queres elegir exactamente qué dirá, luego de comprar este privilegio tendrás que pagar un monto extra)", fields: ['Nombre de la víctima'], upsell: true },
   { id: 17, name: "Me da wewencha", price: 65, cat: 'publica', desc: "Negate a tu obligación de hablar.", fields: [] },
-  { id: 18, name: "RE de chill", price: 70, cat: 'publica', desc: "Mirá cómo ordenan el templo sin hacer nada.", fields: [] },
-  { id: 19, name: "Jeropanchill", price: 75, cat: 'panchos', desc: "Mirá cómo ordenan sentada sin tener que hacer nada.", fields: [] },
-  { id: 20, name: "Mención presidencial", price: 80, cat: 'publica', desc: "Mencionada por la Ilustre Preceptora.", fields: [], upsell: true }
+  { id: 18, name: "RE de chill", price: 70, cat: 'publica', desc: "No vas a tener que limpiar, ordenar ni ayudar a armar la pública", fields: [] },
+  { id: 19, name: "Jeropanchill", price: 75, cat: 'panchos', desc: "En la JeroPancheada, no ayudes!! Relajate y mira como tus hermanas trabajas sin perder JeroPoints", fields: [] },
+  { id: 20, name: "Mención presidencial", price: 80, cat: 'publica', desc: "En el momento de la palabra de la Ilustre, al final de la ceremonia, va a digirte unas palabras de reconocimiento (Si queres elegir exactamente qué dirá, luego de comprar este privilegio tendrás que pagar un monto extra)", fields: [], upsell: true }
 ];
 
 async function attemptLogin() {
