@@ -192,6 +192,8 @@ let activeItem = null;
 let globalLogs = [];
 
 function cargarFiltrosGuardados() {
+    // Solo cargar filtros si no es invitada (para que las invitadas no hereden filtros personalizados)
+    if (isGuest) return;
     const guardados = localStorage.getItem('jeroStore_filtros');
     if (guardados) {
         try {
@@ -199,6 +201,10 @@ function cargarFiltrosGuardados() {
             activeModes = { ...activeModes, ...filtros };
         } catch(e) {}
     }
+    actualizarBotonesModo();
+}
+
+function actualizarBotonesModo() {
     const btnNormal = document.getElementById('btn_normal');
     const btnPublica = document.getElementById('btn_publica');
     const btnDinamica = document.getElementById('btn_dinamica');
@@ -210,6 +216,7 @@ function cargarFiltrosGuardados() {
 }
 
 function guardarFiltros() {
+    if (isGuest) return; // No guardar filtros de invitada
     localStorage.setItem('jeroStore_filtros', JSON.stringify({
         normal: activeModes.normal,
         publica: activeModes.publica,
@@ -282,6 +289,9 @@ async function attemptLogin() {
         document.getElementById('labelName').innerText = user.nombre;
         document.getElementById('valCoins').innerText = user.jeroCoins;
         document.getElementById('jeroBadge').style.display = 'block';
+        
+        // Cargar filtros guardados del usuario
+        cargarFiltrosGuardados();
         
         if(isStoreOpen) actualizarMuroYAdmin(globalLogs);
         else {
@@ -442,6 +452,10 @@ function toggleDesc(id) {
 }
 
 function openBuy(id) {
+    if (isGuest) {
+        mostrarMensaje("🌸 Para comprar un privilegio, inicia sesión con tu usuario y contraseña.");
+        return;
+    }
     activeItem = CATALOG.find(i => i.id === id);
     document.getElementById('buyTitle').innerText = activeItem.name;
     document.getElementById('buyDesc').innerText = activeItem.desc;
@@ -479,6 +493,9 @@ async function enterAsGuest() {
     document.getElementById('authOverlay').style.display = 'none';
     isGuest = true;
     user = null;
+    // Resetear filtros a los valores por defecto (sin guardar)
+    activeModes = { normal: true, publica: false, dinamica: false, panchos: false, always: true };
+    actualizarBotonesModo();
     try {
         const resp = await fetch(SCRIPT_URL + "?source=store");
         const data = await resp.json();
@@ -519,6 +536,10 @@ function lanzarConfeti() {
 }
 
 function toggleMode(cat, btnId) {
+    if (isGuest) {
+        mostrarMensaje("Inicia sesión para cambiar los filtros de la tienda.");
+        return;
+    }
     activeModes[cat] = !activeModes[cat];
     const btn = document.getElementById(btnId);
     if (btn) btn.classList.toggle('active', activeModes[cat]);
@@ -550,6 +571,7 @@ async function closeYear() {
     }
 }
 
+// Inicialización: si no hay usuario logueado, es invitada
 cargarFiltrosGuardados();
 render();
 </script>
