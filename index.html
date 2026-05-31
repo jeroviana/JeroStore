@@ -59,9 +59,21 @@
   .admin-table th { background: var(--rosa-pastel); padding: 8px; text-align: left; position: sticky; top: 0; }
   .admin-table td { padding: 8px; border-bottom: 1px solid #eee; }
 
+  /* ----- FLEX para evitar estiramiento ----- */
   .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
-  .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-  .card { background: white; border-radius: 15px; border: 1px solid var(--rosa-pastel); display: flex; flex-direction: column; box-shadow: var(--sombra); }
+  .store-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: flex-start; }
+  .card { 
+    background: white; border-radius: 15px; border: 1px solid var(--rosa-pastel);
+    display: flex; flex-direction: column; box-shadow: var(--sombra);
+    width: calc(33% - 10px);
+    flex-shrink: 0;
+  }
+  @media (max-width: 700px) {
+    .card { width: calc(50% - 8px); }
+  }
+  @media (max-width: 450px) {
+    .card { width: 100%; }
+  }
   .card-body { padding: 20px 15px; text-align: center; cursor: pointer; flex-grow: 1; }
   .card-title { font-family: 'Playfair Display'; font-size: 1rem; color: var(--texto); font-weight: 600; }
   .card-info { font-size: 0.75rem; color: #555; background: #fffcfd; max-height: 0; overflow: hidden; transition: 0.3s ease-out; text-align: center; }
@@ -74,7 +86,9 @@
   .modal-content { background: white; padding: 30px 20px; border-radius: 20px; width: 85%; max-width: 340px; border-top: 5px solid var(--rosa-fuerte); max-height: 90vh; overflow-y: auto;}
   .modal-content h2 { font-family: 'Playfair Display'; font-size: 1.3rem; margin: 0 0 10px 0; text-align: center; color: var(--rosa-fuerte); }
   .field-label { display: block; font-size: 0.7rem; font-weight: 700; color: #888; margin: 15px 0 5px 5px; text-transform: uppercase; }
-  
+  .descripcion-modal { background: var(--rosa-pastel); padding: 12px; border-radius: 12px; font-size: 0.85rem; margin: 10px 0; color: #555; text-align: center; }
+  .price-display { font-weight: bold; text-align: center; margin: 10px 0; font-size: 1.2rem; color: var(--rosa-fuerte); }
+
   .toast { visibility: hidden; min-width: 250px; background-color: var(--rosa-fuerte); color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 9999; left: 50%; transform: translateX(-50%); bottom: 30px; opacity: 0; transition: 0.3s; font-weight: 600; font-size: 0.85rem;}
   .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
   .confetti { position: fixed; width: 10px; height: 10px; z-index: 9998; animation: fall linear forwards; }
@@ -108,7 +122,7 @@
   <div class="auth-card">
     <h2>Bienvenida</h2>
     <p>Inicia sesión con tus datos de la Asamblea</p>
-    <input type="text" id="userInput" placeholder="Tu nombre">
+    <input type="text" id="userInput" placeholder="Tu nombre o alias">
     <input type="password" id="passInput" placeholder="Contraseña">
     <button class="btn-main" onclick="attemptLogin()">Entrar</button>
     <button class="btn-guest" onclick="enterAsGuest()">Continuar como invitada</button>
@@ -124,6 +138,7 @@
     <button class="toggle" id="btn_dinamica" onclick="toggleMode('dinamica', 'btn_dinamica')">Dinámica</button>
     <button class="toggle" id="btn_panchos" onclick="toggleMode('panchos', 'btn_panchos')">Panchos</button>
     <button class="toggle" style="background: var(--oro); color: white; border:none; width: 100%; margin-top:5px;" onclick="closeMonth()">Cerrar Mes ✨</button>
+    <button class="toggle" style="background: #D8303B; color: white; border:none; width: 100%; margin-top:5px;" onclick="closeYear()">Cerrar Año 📅</button>
   </div>
   <div class="admin-table-container">
     <table class="admin-table">
@@ -140,7 +155,9 @@
 <div class="modal" id="modalBuy">
   <div class="modal-content">
     <h2 id="buyTitle"></h2>
+    <div class="descripcion-modal" id="buyDesc"></div>
     <div id="dynamicFields"></div>
+    <div class="price-display" id="priceDisplay"></div>
     <div id="upsellSection" class="hidden" style="margin-top: 15px; padding: 12px; background: #fff9fb; border: 1px solid var(--rosa-principal); border-radius: 12px;">
       <label style="font-size: 0.8rem; font-weight: 600; color: var(--rosa-fuerte); display: flex; align-items: center; gap: 8px;">
         <input type="checkbox" id="upsellCheck" onchange="updateUpsellUI()"> Especificar mensaje (+25%)
@@ -182,7 +199,6 @@ function cargarFiltrosGuardados() {
             activeModes = { ...activeModes, ...filtros };
         } catch(e) {}
     }
-    
     const btnNormal = document.getElementById('btn_normal');
     const btnPublica = document.getElementById('btn_publica');
     const btnDinamica = document.getElementById('btn_dinamica');
@@ -210,7 +226,7 @@ const CATALOG = [
   { id: 4, name: "Entrada Triunfal", price: 15, cat: 'normal', desc: "Música para la entrada ritualística.", fields: ['Canción'] },
   { id: 5, name: "Salida Triunfal", price: 18, cat: 'normal', desc: "Música para la salida ritualística.", fields: ['Canción'] },
   { id: 6, name: "Este tema NO", price: 20, cat: 'always', desc: "Decidí qué música NO va a sonar.", fields: ['Canción prohibida'] },
-  { id: 7, name: "Mi tema", price: 22, cat: 'publica', desc: "Elgi una música para que suene en la pública (cuando Armonía decida).", fields: ['Canción'] },
+  { id: 7, name: "Mi tema", price: 22, cat: 'publica', desc: "Elegí una música para que suene en la pública (cuando Armonía decida).", fields: ['Canción'] },
   { id: 8, name: "Momento epico", price: 25, cat: 'publica', desc: "Música para la ceremonia pública en el momento que VOS elijas.", fields: ['Canción', 'Momento'] },
   { id: 9, name: "Entrada Triunfal", price: 30, cat: 'publica', desc: "Música para la entrada de la ceremonia pública.", fields: ['Canción'] },
   { id: 10, name: "Salida epica", price: 35, cat: 'publica', desc: "Música para la salida de la ceremonia pública.", fields: ['Canción'] },
@@ -227,23 +243,30 @@ const CATALOG = [
 ];
 
 async function attemptLogin() {
-    const n = document.getElementById('userInput').value;
-    const p = document.getElementById('passInput').value;
-    if(!n || !p) return mostrarMensaje("Completá tus datos 🌸");
+    const inputUser = document.getElementById('userInput').value.trim();
+    const inputPass = document.getElementById('passInput').value.trim();
+    if(!inputUser || !inputPass) return mostrarMensaje("Completá tus datos 🌸");
     
     try {
         const resp = await fetch(SCRIPT_URL + "?source=store");
         const data = await resp.json();
         
-        const found = data.usuarios.find(h => h.nombre && h.nombre.toLowerCase() === n.toLowerCase() && h.password === p);
-        
         if(data.storeState === "CLOSED") isStoreOpen = false;
         else isStoreOpen = true;
         
-        if(n === "Jeroviana" && p === "9102021") {
+        let found = null;
+        for (let u of data.usuarios) {
+            const aliasMatch = u.alias && u.alias.toLowerCase() === inputUser.toLowerCase();
+            const nameMatch = u.nombre.toLowerCase() === inputUser.toLowerCase();
+            if ((aliasMatch || nameMatch) && u.password === inputPass) {
+                found = u;
+                break;
+            }
+        }
+        
+        if(inputUser === "Jeroviana" && inputPass === "9102021") {
             user = { nombre: "Jeroviana", jeroCoins: 9999 };
             document.getElementById('adminBar').style.display = 'block';
-            
             const btnT = document.getElementById('btnMasterToggle');
             btnT.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
             btnT.classList.toggle('off', !isStoreOpen);
@@ -358,34 +381,28 @@ async function executePurchase() {
 async function toggleMasterSwitch() {
     const newState = isStoreOpen ? "CLOSED" : "OPEN";
     mostrarMensaje(newState === "CLOSED" ? "🔒 Cerrando tienda y archivando..." : "🔓 Abriendo tienda...");
-    
-    // Mostrar un pequeño indicador de carga (opcional, se puede usar un toast o cambiar el texto del botón)
     const btn = document.getElementById('btnMasterToggle');
     const originalText = btn.innerText;
     btn.innerText = "⏳ Procesando...";
     
     try {
-        // 1. Enviar comando al servidor
         await fetch(SCRIPT_URL + "?source=store", {
             method: 'POST',
             body: JSON.stringify({ action: "TOGGLE_STORE", state: newState })
         });
         
         if (newState === "CLOSED") {
-            // Apagar: limpiar logs locales y vista
             globalLogs = [];
             document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. Los canjes se archivaron. ✨</li>';
             if (user && user.nombre === "Jeroviana") {
-                document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Compras archivadas</td>';
+                document.getElementById('adminLogsBody').innerHTML = '<tr><td colspan="3">Tienda cerrada - Compras archivadas</td></tr>';
             }
             isStoreOpen = false;
         } else {
-            // Encender: recargar datos del servidor (logs actualizados, ya vacíos o nuevos)
             await recargarDatosAlAbrirTienda();
             isStoreOpen = true;
         }
         
-        // Actualizar botón y estado visual
         btn.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
         btn.classList.toggle('off', !isStoreOpen);
         render();
@@ -397,15 +414,13 @@ async function toggleMasterSwitch() {
         btn.innerText = originalText;
     }
 }
+
 async function recargarDatosAlAbrirTienda() {
     try {
         const resp = await fetch(SCRIPT_URL + "?source=store");
         const data = await resp.json();
-        
         globalLogs = data.logs || [];
         actualizarMuroYAdmin(globalLogs);
-        
-        // Actualizar también los JeroCoins del usuario actual (por si cambiaron)
         if (user && user.nombre !== "Jeroviana") {
             const foundUser = data.usuarios.find(u => u.nombre === user.nombre);
             if (foundUser) {
@@ -429,6 +444,7 @@ function toggleDesc(id) {
 function openBuy(id) {
     activeItem = CATALOG.find(i => i.id === id);
     document.getElementById('buyTitle').innerText = activeItem.name;
+    document.getElementById('buyDesc').innerText = activeItem.desc;
     const fields = document.getElementById('dynamicFields');
     fields.innerHTML = activeItem.fields.map(f => `<label class="field-label">${f}</label><input type="text" id="f_${f.replace(/\s/g, '')}" placeholder="Completar...">`).join('');
     
@@ -440,11 +456,45 @@ function openBuy(id) {
         document.getElementById('upsellMsg').value = '';
     } else { up.classList.add('hidden'); }
     
+    actualizarPrecioModal();
     document.getElementById('modalBuy').style.display = 'flex';
 }
 
-function updateUpsellUI() { document.getElementById('upsellMsg').style.display = document.getElementById('upsellCheck').checked ? 'block' : 'none'; }
-function enterAsGuest() { document.getElementById('authOverlay').style.display = 'none'; render(); }
+function actualizarPrecioModal() {
+    if (!activeItem) return;
+    let price = activeItem.price;
+    const isUp = activeItem.upsell && document.getElementById('upsellCheck') && document.getElementById('upsellCheck').checked;
+    if (isUp) price = Math.round(activeItem.price * 1.25);
+    const coinsMsg = user ? `Tus JeroCoins: ${user.jeroCoins}` : "Inicia sesión para canjear";
+    document.getElementById('priceDisplay').innerHTML = `Costo final: ${price} ✦<br><small style="font-size:0.7rem;">${coinsMsg}</small>`;
+}
+
+function updateUpsellUI() {
+    const show = document.getElementById('upsellCheck').checked;
+    document.getElementById('upsellMsg').style.display = show ? 'block' : 'none';
+    actualizarPrecioModal();
+}
+
+async function enterAsGuest() {
+    document.getElementById('authOverlay').style.display = 'none';
+    isGuest = true;
+    user = null;
+    try {
+        const resp = await fetch(SCRIPT_URL + "?source=store");
+        const data = await resp.json();
+        isStoreOpen = (data.storeState !== "CLOSED");
+        if (isStoreOpen) {
+            actualizarMuroYAdmin(data.logs || []);
+        } else {
+            document.getElementById('muroList').innerHTML = '<li>✨ Tienda cerrada. Vuelve pronto ✨</li>';
+        }
+        render();
+    } catch(e) {
+        console.error(e);
+        render();
+    }
+}
+
 function closeM(id) { document.getElementById(id).style.display = 'none'; }
 function openHelp() { document.getElementById('modalHelp').style.display = 'flex'; }
 
@@ -479,15 +529,27 @@ function toggleMode(cat, btnId) {
 async function closeMonth() {
     if(confirm("⚠️ ¿Estás segura de cerrar el mes?\n\nEsto va a:\n✅ Sumar JeroCoins al podio (15/10/5) a TODAS las empatadas\n✅ Sumar +1 mes en podio\n✅ Cerrar la tienda automáticamente\n❌ NO mueve compras (eso ya se hace al apagar)\n\n¿Deseas continuar?")) {
         mostrarMensaje("Cerrando mes... Procesando podio 🌸");
-        
         await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_MONTH" }) });
-        
         mostrarMensaje("✨ ¡Mes cerrado exitosamente! ✨");
         setTimeout(() => location.reload(), 2000);
     }
 }
 
-// Inicializar
+async function closeYear() {
+    if(confirm("⚠️ CIERRE ANUAL ⚠️\n\nEsto va a:\n✅ Resetear TODOS los puntos de cada hermana a 0\n✅ Archivar el HistorialCierre actual en 'HistorialCierre_AÑO'\n✅ Limpiar el HistorialCierre para el nuevo año\n✅ (Opcional) Archivar logs residuales\n\nLos JeroCoins y meses en podio NO se pierden.\n\n¿Deseas continuar?")) {
+        mostrarMensaje("Cerrando año... Archivando y reseteando puntos 📅");
+        try {
+            const resp = await fetch(SCRIPT_URL + "?source=store", { method: 'POST', body: JSON.stringify({ action: "CLOSE_YEAR" }) });
+            const text = await resp.text();
+            mostrarMensaje(text);
+            setTimeout(() => location.reload(), 2500);
+        } catch(e) {
+            mostrarMensaje("Error al cerrar año. Revisa la consola.");
+            console.error(e);
+        }
+    }
+}
+
 cargarFiltrosGuardados();
 render();
 </script>
