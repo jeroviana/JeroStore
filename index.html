@@ -273,7 +273,8 @@ async function attemptLogin() {
         }
         
         if(inputUser === "Jeroviana" && inputPass === "9102021") {
-            user = { nombre: "Jeroviana", jeroCoins: 9999 };
+            user = { nombre: "Jeroviana", jeroCoins: 641922 };
+            isGuest = false;
             document.getElementById('adminBar').style.display = 'block';
             const btnT = document.getElementById('btnMasterToggle');
             btnT.innerText = isStoreOpen ? "Tienda: ON" : "Tienda: OFF";
